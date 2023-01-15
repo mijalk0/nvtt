@@ -195,7 +195,7 @@ impl CompressionOptions {
                 color_dithering.into(),
                 alpha_dithering.into(),
                 binary_alpha.into(),
-                alpha_threshold.into(),
+                alpha_threshold,
             )
         }
     }
@@ -209,6 +209,12 @@ impl CompressionOptions {
     /// for both unsigned and signed BC6, 'BC7L' for BC7, and 'ASTC' for all ASTC formats.
     pub fn d3d9_format(&self) -> u32 {
         unsafe { nvtt_sys::nvttGetCompressionOptionsD3D9Format(self.0) }
+    }
+}
+
+impl Default for CompressionOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -304,6 +310,7 @@ impl Context {
     }
 
     #[must_use]
+    #[allow(clippy::too_many_arguments)]
     /// Write the [`Container`]'s header to the output. Returns `true` on success.
     pub fn output_header_data(
         &self,
@@ -496,6 +503,12 @@ impl Context {
     /// See Nvidia SDK documentation for more information.
     pub unsafe fn quantize(&self, tex: &mut Surface, compression_options: &CompressionOptions) {
         unsafe { nvtt_sys::nvttContextQuantize(self.0, tex.0, compression_options.0) }
+    }
+}
+
+impl Default for Context {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -726,8 +739,8 @@ enum OutputPath {
 impl AsRef<Path> for OutputPath {
     fn as_ref(&self) -> &Path {
         match self {
-            Self::Concrete(path_buf) => &path_buf,
-            Self::Temporary(temp_path) => &temp_path,
+            Self::Concrete(path_buf) => path_buf,
+            Self::Temporary(temp_path) => temp_path,
         }
     }
 }
@@ -763,7 +776,7 @@ impl OutputOptions {
 
         // If there is an error, the file will be automatically deleted
         // due to TempPath's drop()
-        Ok(Self::with_file(file, OutputPath::Temporary(path))?)
+        Self::with_file(file, OutputPath::Temporary(path))
     }
 
     fn with_file(file: std::fs::File, path: OutputPath) -> Result<Self, std::io::Error> {
@@ -775,12 +788,11 @@ impl OutputOptions {
             }
         }
 
-        let fd: libc::c_int;
         cfg_if::cfg_if! {
             if #[cfg(unix)] {
                 use std::os::unix::prelude::IntoRawFd;
                 // Takes ownership
-                fd = file.into_raw_fd();
+                let fd: libc::c_int = file.into_raw_fd();
             } else if #[cfg(windows)] {
                 use std::os::windows::io::IntoRawHandle;
                 // Takes ownership
@@ -1017,7 +1029,7 @@ impl Surface {
     /// let surface = Surface::image(input, 100, 100, 100);
     /// assert!(surface.is_err());
     /// ```
-    pub fn image<'a>(input: InputFormat<'a>, w: u32, h: u32, d: u32) -> Result<Self, SurfaceError> {
+    pub fn image(input: InputFormat, w: u32, h: u32, d: u32) -> Result<Self, SurfaceError> {
         if !input.fit_dim(w, h, d) {
             return Err(SurfaceError::InvalidDimensions {
                 expected: input.min_bytes(w, h, d),
@@ -1117,8 +1129,8 @@ impl Surface {
     /// let surface = Surface::image_split(input, 100, 100, 100);
     /// assert!(surface.is_err());
     /// ```
-    pub fn image_split<'a>(
-        input: SplitInputFormat<'a>,
+    pub fn image_split(
+        input: SplitInputFormat,
         w: u32,
         h: u32,
         d: u32,
@@ -1259,7 +1271,7 @@ impl Surface {
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
     pub fn on_gpu(&self) -> bool {
-        self.gpu_data_ptr() != std::ptr::null_mut()
+        !self.gpu_data_ptr().is_null()
     }
 
     /// Copies data from CPU to GPU, enabling CUDA for all subsequent operations. Does nothing if
@@ -1692,7 +1704,7 @@ impl Surface {
             )
             .into()
             {
-                return Ok(());
+                Ok(())
             } else {
                 Err(SurfaceError::InvalidDimensions {
                     expected: self.channel(dst_channel).len() as u32,
@@ -1722,7 +1734,7 @@ impl Surface {
             )
             .into()
             {
-                return Ok(());
+                Ok(())
             } else {
                 Err(SurfaceError::InvalidDimensions {
                     expected: self.channel(dst_channel).len() as u32,
@@ -2350,9 +2362,7 @@ impl Surface {
     pub fn channel_to_gamma(&mut self, channel: Channel, gamma: f32) {
         let channel = channel as i32;
 
-        unsafe {
-            nvtt_sys::nvttSurfaceToGammaChannel(self.0, channel, gamma, std::ptr::null_mut())
-        }
+        unsafe { nvtt_sys::nvttSurfaceToGammaChannel(self.0, channel, gamma, std::ptr::null_mut()) }
     }
 
     /// Applies the linear-to-sRGB transfer function to RGB channels.
@@ -2728,7 +2738,7 @@ impl Surface {
     ///
     /// Panics if `bins.len() == 0`.
     pub fn histogram(&self, channel: Channel, range_min: f32, range_max: f32, bins: &mut [i32]) {
-        if bins.len() == 0 {
+        if bins.is_empty() {
             panic!("bins must be non empty");
         }
 
@@ -3037,11 +3047,7 @@ impl Surface {
     /// Reconstructs 3D normals from 2D transformed normals.
     pub fn reconstruct_normals(&mut self, transform: NormalTransform) {
         unsafe {
-            nvtt_sys::nvttSurfaceReconstructNormals(
-                self.0,
-                transform.into(),
-                std::ptr::null_mut(),
-            );
+            nvtt_sys::nvttSurfaceReconstructNormals(self.0, transform.into(), std::ptr::null_mut());
         }
     }
 

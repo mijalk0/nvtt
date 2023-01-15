@@ -36,11 +36,11 @@ pub enum Container {
 }
 
 use nvtt_sys::NvttContainer;
-impl Into<NvttContainer> for Container {
-    fn into(self) -> NvttContainer {
-        match self {
-            Self::Dds => NvttContainer::NVTT_Container_DDS,
-            Self::Dds10 => NvttContainer::NVTT_Container_DDS10,
+impl From<Container> for NvttContainer {
+    fn from(val: Container) -> Self {
+        match val {
+            Container::Dds => NvttContainer::NVTT_Container_DDS,
+            Container::Dds10 => NvttContainer::NVTT_Container_DDS10,
         }
     }
 }
@@ -61,12 +61,12 @@ pub enum EdgeFixup {
     Warp,
 }
 
-impl Into<nvtt_sys::EdgeFixup> for EdgeFixup {
-    fn into(self) -> nvtt_sys::EdgeFixup {
-        match self {
-            Self::None => nvtt_sys::EdgeFixup::NVTT_EdgeFixup_None,
-            Self::Stretch => nvtt_sys::EdgeFixup::NVTT_EdgeFixup_Stretch,
-            Self::Warp => nvtt_sys::EdgeFixup::NVTT_EdgeFixup_Warp,
+impl From<EdgeFixup> for nvtt_sys::EdgeFixup {
+    fn from(val: EdgeFixup) -> Self {
+        match val {
+            EdgeFixup::None => nvtt_sys::EdgeFixup::NVTT_EdgeFixup_None,
+            EdgeFixup::Stretch => nvtt_sys::EdgeFixup::NVTT_EdgeFixup_Stretch,
+            EdgeFixup::Warp => nvtt_sys::EdgeFixup::NVTT_EdgeFixup_Warp,
         }
     }
 }
@@ -90,13 +90,13 @@ pub enum Quality {
 }
 
 use nvtt_sys::NvttQuality;
-impl Into<NvttQuality> for Quality {
-    fn into(self) -> NvttQuality {
-        match self {
-            Self::Fastest => NvttQuality::NVTT_Quality_Fastest,
-            Self::Normal => NvttQuality::NVTT_Quality_Normal,
-            Self::Production => NvttQuality::NVTT_Quality_Production,
-            Self::Highest => NvttQuality::NVTT_Quality_Highest,
+impl From<Quality> for NvttQuality {
+    fn from(val: Quality) -> Self {
+        match val {
+            Quality::Fastest => NvttQuality::NVTT_Quality_Fastest,
+            Quality::Normal => NvttQuality::NVTT_Quality_Normal,
+            Quality::Production => NvttQuality::NVTT_Quality_Production,
+            Quality::Highest => NvttQuality::NVTT_Quality_Highest,
         }
     }
 }
@@ -115,12 +115,12 @@ pub enum AlphaMode {
 }
 
 use nvtt_sys::NvttAlphaMode;
-impl Into<NvttAlphaMode> for AlphaMode {
-    fn into(self) -> NvttAlphaMode {
-        match self {
-            Self::None => NvttAlphaMode::NVTT_AlphaMode_None,
-            Self::Transparency => NvttAlphaMode::NVTT_AlphaMode_Transparency,
-            Self::Premultiplied => NvttAlphaMode::NVTT_AlphaMode_Premultiplied,
+impl From<AlphaMode> for NvttAlphaMode {
+    fn from(val: AlphaMode) -> Self {
+        match val {
+            AlphaMode::None => NvttAlphaMode::NVTT_AlphaMode_None,
+            AlphaMode::Transparency => NvttAlphaMode::NVTT_AlphaMode_Transparency,
+            AlphaMode::Premultiplied => NvttAlphaMode::NVTT_AlphaMode_Premultiplied,
         }
     }
 }
@@ -235,44 +235,44 @@ pub enum Format {
 }
 
 use nvtt_sys::NvttFormat;
-impl Into<NvttFormat> for Format {
-    fn into(self) -> NvttFormat {
-        match self {
-            Self::Rgb => NvttFormat::NVTT_Format_RGB,
-            Self::Rgba => NvttFormat::NVTT_Format_RGB, // = NVTT_Format_RGB
-            Self::Dxt1 => NvttFormat::NVTT_Format_DXT1,
-            Self::Dxt1a => NvttFormat::NVTT_Format_DXT1a,
-            Self::Dxt3 => NvttFormat::NVTT_Format_DXT3,
-            Self::Dxt5 => NvttFormat::NVTT_Format_DXT5,
-            Self::Dxt5n => NvttFormat::NVTT_Format_DXT5n,
-            Self::Bc1 => NvttFormat::NVTT_Format_DXT1, // = NVTT_Format_DXT1
-            Self::Bc1a => NvttFormat::NVTT_Format_DXT1a, // = NVTT_Format_DXT1a
-            Self::Bc2 => NvttFormat::NVTT_Format_DXT3, // = NVTT_Format_DXT3
-            Self::Bc3 => NvttFormat::NVTT_Format_DXT5, // = NVTT_Format_DXT5
-            Self::Bc3n => NvttFormat::NVTT_Format_DXT5n, // = NVTT_Format_DXT5n
-            Self::Bc4 => NvttFormat::NVTT_Format_BC4,
-            Self::Bc4S => NvttFormat::NVTT_Format_BC4S,
-            Self::Ati2 => NvttFormat::NVTT_Format_ATI2,
-            Self::Bc5 => NvttFormat::NVTT_Format_BC5,
-            Self::Bc5S => NvttFormat::NVTT_Format_BC5S,
-            Self::Bc6U => NvttFormat::NVTT_Format_BC6U,
-            Self::Bc6S => NvttFormat::NVTT_Format_BC6S,
-            Self::Bc7 => NvttFormat::NVTT_Format_BC7,
-            Self::Bc3Rgbm => NvttFormat::NVTT_Format_BC3_RGBM,
-            Self::AstcLdr4x4 => NvttFormat::NVTT_Format_ASTC_LDR_4x4,
-            Self::AstcLdr5x4 => NvttFormat::NVTT_Format_ASTC_LDR_5x4,
-            Self::AstcLdr5x5 => NvttFormat::NVTT_Format_ASTC_LDR_5x5,
-            Self::AstcLdr6x5 => NvttFormat::NVTT_Format_ASTC_LDR_6x5,
-            Self::AstcLdr6x6 => NvttFormat::NVTT_Format_ASTC_LDR_6x6,
-            Self::AstcLdr8x5 => NvttFormat::NVTT_Format_ASTC_LDR_8x5,
-            Self::AstcLdr8x6 => NvttFormat::NVTT_Format_ASTC_LDR_8x6,
-            Self::AstcLdr8x8 => NvttFormat::NVTT_Format_ASTC_LDR_8x8,
-            Self::AstcLdr10x5 => NvttFormat::NVTT_Format_ASTC_LDR_10x5,
-            Self::AstcLdr10x6 => NvttFormat::NVTT_Format_ASTC_LDR_10x6,
-            Self::AstcLdr10x8 => NvttFormat::NVTT_Format_ASTC_LDR_10x8,
-            Self::AstcLdr10x10 => NvttFormat::NVTT_Format_ASTC_LDR_10x10,
-            Self::AstcLdr12x10 => NvttFormat::NVTT_Format_ASTC_LDR_12x10,
-            Self::AstcLdr12x12 => NvttFormat::NVTT_Format_ASTC_LDR_12x12,
+impl From<Format> for NvttFormat {
+    fn from(val: Format) -> Self {
+        match val {
+            Format::Rgb => NvttFormat::NVTT_Format_RGB,
+            Format::Rgba => NvttFormat::NVTT_Format_RGB, // = NVTT_Format_RGB
+            Format::Dxt1 => NvttFormat::NVTT_Format_DXT1,
+            Format::Dxt1a => NvttFormat::NVTT_Format_DXT1a,
+            Format::Dxt3 => NvttFormat::NVTT_Format_DXT3,
+            Format::Dxt5 => NvttFormat::NVTT_Format_DXT5,
+            Format::Dxt5n => NvttFormat::NVTT_Format_DXT5n,
+            Format::Bc1 => NvttFormat::NVTT_Format_DXT1, // = NVTT_Format_DXT1
+            Format::Bc1a => NvttFormat::NVTT_Format_DXT1a, // = NVTT_Format_DXT1a
+            Format::Bc2 => NvttFormat::NVTT_Format_DXT3, // = NVTT_Format_DXT3
+            Format::Bc3 => NvttFormat::NVTT_Format_DXT5, // = NVTT_Format_DXT5
+            Format::Bc3n => NvttFormat::NVTT_Format_DXT5n, // = NVTT_Format_DXT5n
+            Format::Bc4 => NvttFormat::NVTT_Format_BC4,
+            Format::Bc4S => NvttFormat::NVTT_Format_BC4S,
+            Format::Ati2 => NvttFormat::NVTT_Format_ATI2,
+            Format::Bc5 => NvttFormat::NVTT_Format_BC5,
+            Format::Bc5S => NvttFormat::NVTT_Format_BC5S,
+            Format::Bc6U => NvttFormat::NVTT_Format_BC6U,
+            Format::Bc6S => NvttFormat::NVTT_Format_BC6S,
+            Format::Bc7 => NvttFormat::NVTT_Format_BC7,
+            Format::Bc3Rgbm => NvttFormat::NVTT_Format_BC3_RGBM,
+            Format::AstcLdr4x4 => NvttFormat::NVTT_Format_ASTC_LDR_4x4,
+            Format::AstcLdr5x4 => NvttFormat::NVTT_Format_ASTC_LDR_5x4,
+            Format::AstcLdr5x5 => NvttFormat::NVTT_Format_ASTC_LDR_5x5,
+            Format::AstcLdr6x5 => NvttFormat::NVTT_Format_ASTC_LDR_6x5,
+            Format::AstcLdr6x6 => NvttFormat::NVTT_Format_ASTC_LDR_6x6,
+            Format::AstcLdr8x5 => NvttFormat::NVTT_Format_ASTC_LDR_8x5,
+            Format::AstcLdr8x6 => NvttFormat::NVTT_Format_ASTC_LDR_8x6,
+            Format::AstcLdr8x8 => NvttFormat::NVTT_Format_ASTC_LDR_8x8,
+            Format::AstcLdr10x5 => NvttFormat::NVTT_Format_ASTC_LDR_10x5,
+            Format::AstcLdr10x6 => NvttFormat::NVTT_Format_ASTC_LDR_10x6,
+            Format::AstcLdr10x8 => NvttFormat::NVTT_Format_ASTC_LDR_10x8,
+            Format::AstcLdr10x10 => NvttFormat::NVTT_Format_ASTC_LDR_10x10,
+            Format::AstcLdr12x10 => NvttFormat::NVTT_Format_ASTC_LDR_12x10,
+            Format::AstcLdr12x12 => NvttFormat::NVTT_Format_ASTC_LDR_12x12,
         }
     }
 }
@@ -360,13 +360,13 @@ macro_rules! impl_input_format {
                 }
             }
 
-            pub(crate) fn into_nvtt(&self) -> nvtt_sys::NvttInputFormat {
+            pub(crate) fn into_nvtt(self) -> nvtt_sys::NvttInputFormat {
                 match self {
-                    &Self::Bgra8Ub { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_BGRA_8UB,
-                    &Self::Bgra8Sb { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_BGRA_8SB,
-                    &Self::Rgba16f { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_RGBA_16F,
-                    &Self::Rgba32f { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_RGBA_32F,
-                    &Self::R32f { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_R_32F,
+                    Self::Bgra8Ub { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_BGRA_8UB,
+                    Self::Bgra8Sb { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_BGRA_8SB,
+                    Self::Rgba16f { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_RGBA_16F,
+                    Self::Rgba32f { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_RGBA_32F,
+                    Self::R32f { .. } => nvtt_sys::NvttInputFormat::NVTT_InputFormat_R_32F,
                 }
             }
         }
@@ -379,11 +379,11 @@ impl_input_format!(SplitInputFormat);
 impl<'a> InputFormat<'a> {
     pub fn data(&self) -> &[u8] {
         match self {
-            &Self::Bgra8Ub { data, .. } => &data,
-            &Self::Bgra8Sb(data) => data,
-            &Self::Rgba16f(data) => data,
-            &Self::Rgba32f(data) => data,
-            &Self::R32f(data) => data,
+            Self::Bgra8Ub { data, .. } => data,
+            Self::Bgra8Sb(data) => data,
+            Self::Rgba16f(data) => data,
+            Self::Rgba32f(data) => data,
+            Self::R32f(data) => data,
         }
     }
 
@@ -462,13 +462,13 @@ pub enum PixelType {
 }
 
 use nvtt_sys::NvttPixelType;
-impl Into<NvttPixelType> for PixelType {
-    fn into(self) -> NvttPixelType {
-        match self {
-            Self::UnsignedNorm => NvttPixelType::NVTT_PixelType_UnsignedNorm,
-            Self::Float => NvttPixelType::NVTT_PixelType_Float,
-            Self::UnsignedFloat => NvttPixelType::NVTT_PixelType_UnsignedFloat,
-            Self::SharedExp => NvttPixelType::NVTT_PixelType_SharedExp,
+impl From<PixelType> for NvttPixelType {
+    fn from(val: PixelType) -> Self {
+        match val {
+            PixelType::UnsignedNorm => NvttPixelType::NVTT_PixelType_UnsignedNorm,
+            PixelType::Float => NvttPixelType::NVTT_PixelType_Float,
+            PixelType::UnsignedFloat => NvttPixelType::NVTT_PixelType_UnsignedFloat,
+            PixelType::SharedExp => NvttPixelType::NVTT_PixelType_SharedExp,
         }
     }
 }
@@ -485,12 +485,12 @@ pub enum TextureType {
 }
 
 use nvtt_sys::NvttTextureType;
-impl Into<NvttTextureType> for TextureType {
-    fn into(self) -> NvttTextureType {
-        match self {
-            Self::D2 => NvttTextureType::NVTT_TextureType_2D,
-            Self::Cube => NvttTextureType::NVTT_TextureType_Cube,
-            Self::D3 => NvttTextureType::NVTT_TextureType_3D,
+impl From<TextureType> for NvttTextureType {
+    fn from(val: TextureType) -> Self {
+        match val {
+            TextureType::D2 => NvttTextureType::NVTT_TextureType_2D,
+            TextureType::Cube => NvttTextureType::NVTT_TextureType_Cube,
+            TextureType::D3 => NvttTextureType::NVTT_TextureType_3D,
         }
     }
 }
@@ -518,12 +518,12 @@ pub enum WrapMode {
 }
 
 use nvtt_sys::NvttWrapMode;
-impl Into<NvttWrapMode> for WrapMode {
-    fn into(self) -> NvttWrapMode {
-        match self {
-            Self::Clamp => NvttWrapMode::NVTT_WrapMode_Clamp,
-            Self::Repeat => NvttWrapMode::NVTT_WrapMode_Repeat,
-            Self::Mirror => NvttWrapMode::NVTT_WrapMode_Mirror,
+impl From<WrapMode> for NvttWrapMode {
+    fn from(val: WrapMode) -> Self {
+        match val {
+            WrapMode::Clamp => NvttWrapMode::NVTT_WrapMode_Clamp,
+            WrapMode::Repeat => NvttWrapMode::NVTT_WrapMode_Repeat,
+            WrapMode::Mirror => NvttWrapMode::NVTT_WrapMode_Mirror,
         }
     }
 }
@@ -629,7 +629,7 @@ impl Filter<Resize> {
             width: 2.0,
             algorithm: Resize::Mitchell {
                 b: 0.33333333,
-                c: 0.66666667,
+                c: 0.666_666_7,
             },
         }
     }
@@ -703,12 +703,12 @@ impl Mipmap {
 }
 
 use nvtt_sys::NvttMipmapFilter;
-impl Into<NvttMipmapFilter> for Mipmap {
-    fn into(self) -> NvttMipmapFilter {
-        match self {
-            Self::Box => NvttMipmapFilter::NVTT_MipmapFilter_Box,
-            Self::Triangle => NvttMipmapFilter::NVTT_MipmapFilter_Triangle,
-            Self::Kaiser { .. } => NvttMipmapFilter::NVTT_MipmapFilter_Kaiser,
+impl From<Mipmap> for NvttMipmapFilter {
+    fn from(val: Mipmap) -> Self {
+        match val {
+            Mipmap::Box => NvttMipmapFilter::NVTT_MipmapFilter_Box,
+            Mipmap::Triangle => NvttMipmapFilter::NVTT_MipmapFilter_Triangle,
+            Mipmap::Kaiser { .. } => NvttMipmapFilter::NVTT_MipmapFilter_Kaiser,
         }
     }
 }
@@ -734,13 +734,13 @@ pub enum Resize {
 }
 
 use nvtt_sys::NvttResizeFilter;
-impl Into<NvttResizeFilter> for Resize {
-    fn into(self) -> NvttResizeFilter {
-        match self {
-            Self::Box => NvttResizeFilter::NVTT_ResizeFilter_Box,
-            Self::Triangle => NvttResizeFilter::NVTT_ResizeFilter_Box,
-            Self::Kaiser { .. } => NvttResizeFilter::NVTT_ResizeFilter_Kaiser,
-            Self::Mitchell { .. } => NvttResizeFilter::NVTT_ResizeFilter_Mitchell,
+impl From<Resize> for NvttResizeFilter {
+    fn from(val: Resize) -> Self {
+        match val {
+            Resize::Box => NvttResizeFilter::NVTT_ResizeFilter_Box,
+            Resize::Triangle => NvttResizeFilter::NVTT_ResizeFilter_Box,
+            Resize::Kaiser { .. } => NvttResizeFilter::NVTT_ResizeFilter_Kaiser,
+            Resize::Mitchell { .. } => NvttResizeFilter::NVTT_ResizeFilter_Mitchell,
         }
     }
 }
@@ -758,12 +758,12 @@ pub enum ToneMapper {
 }
 
 use nvtt_sys::NvttToneMapper;
-impl Into<NvttToneMapper> for ToneMapper {
-    fn into(self) -> NvttToneMapper {
-        match self {
-            Self::Linear => NvttToneMapper::NVTT_ToneMapper_Linear,
-            Self::Reinhard => NvttToneMapper::NVTT_ToneMapper_Reinhard,
-            Self::Halo => NvttToneMapper::NVTT_ToneMapper_Halo,
+impl From<ToneMapper> for NvttToneMapper {
+    fn from(val: ToneMapper) -> Self {
+        match val {
+            ToneMapper::Linear => NvttToneMapper::NVTT_ToneMapper_Linear,
+            ToneMapper::Reinhard => NvttToneMapper::NVTT_ToneMapper_Reinhard,
+            ToneMapper::Halo => NvttToneMapper::NVTT_ToneMapper_Halo,
         }
     }
 }
@@ -793,13 +793,15 @@ pub enum NormalTransform {
 }
 
 use nvtt_sys::NvttNormalTransform;
-impl Into<NvttNormalTransform> for NormalTransform {
-    fn into(self) -> NvttNormalTransform {
-        match self {
-            Self::Orthographic => NvttNormalTransform::NVTT_NormalTransform_Orthographic,
-            Self::Stereographic => NvttNormalTransform::NVTT_NormalTransform_Stereographic,
-            Self::Paraboloid => NvttNormalTransform::NVTT_NormalTransform_Paraboloid,
-            Self::Quartic => NvttNormalTransform::NVTT_NormalTransform_Quartic,
+impl From<NormalTransform> for NvttNormalTransform {
+    fn from(val: NormalTransform) -> Self {
+        match val {
+            NormalTransform::Orthographic => NvttNormalTransform::NVTT_NormalTransform_Orthographic,
+            NormalTransform::Stereographic => {
+                NvttNormalTransform::NVTT_NormalTransform_Stereographic
+            }
+            NormalTransform::Paraboloid => NvttNormalTransform::NVTT_NormalTransform_Paraboloid,
+            NormalTransform::Quartic => NvttNormalTransform::NVTT_NormalTransform_Quartic,
         }
     }
 }
@@ -849,13 +851,13 @@ pub enum RoundMode {
 }
 
 use nvtt_sys::NvttRoundMode;
-impl Into<NvttRoundMode> for RoundMode {
-    fn into(self) -> NvttRoundMode {
-        match self {
-            Self::None => NvttRoundMode::NVTT_RoundMode_None,
-            Self::ToNextPowerOfTwo => NvttRoundMode::NVTT_RoundMode_ToNextPowerOfTwo,
-            Self::ToNearestPowerOfTwo => NvttRoundMode::NVTT_RoundMode_ToNearestPowerOfTwo,
-            Self::ToPreviousPowerOfTwo => NvttRoundMode::NVTT_RoundMode_ToPreviousPowerOfTwo,
+impl From<RoundMode> for NvttRoundMode {
+    fn from(val: RoundMode) -> Self {
+        match val {
+            RoundMode::None => NvttRoundMode::NVTT_RoundMode_None,
+            RoundMode::ToNextPowerOfTwo => NvttRoundMode::NVTT_RoundMode_ToNextPowerOfTwo,
+            RoundMode::ToNearestPowerOfTwo => NvttRoundMode::NVTT_RoundMode_ToNearestPowerOfTwo,
+            RoundMode::ToPreviousPowerOfTwo => NvttRoundMode::NVTT_RoundMode_ToPreviousPowerOfTwo,
         }
     }
 }
@@ -979,13 +981,15 @@ impl CubeLayout {
     }
 }
 
-impl Into<nvtt_sys::NvttCubeLayout> for CubeLayout {
-    fn into(self) -> nvtt_sys::NvttCubeLayout {
-        match self {
-            Self::VerticalCross => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_VerticalCross,
-            Self::HorizontalCross => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_HorizontalCross,
-            Self::Column => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_Column,
-            Self::Row => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_Row,
+impl From<CubeLayout> for nvtt_sys::NvttCubeLayout {
+    fn from(val: CubeLayout) -> Self {
+        match val {
+            CubeLayout::VerticalCross => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_VerticalCross,
+            CubeLayout::HorizontalCross => {
+                nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_HorizontalCross
+            }
+            CubeLayout::Column => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_Column,
+            CubeLayout::Row => nvtt_sys::NvttCubeLayout::NVTT_CubeLayout_Row,
         }
     }
 }

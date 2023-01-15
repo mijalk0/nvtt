@@ -4,11 +4,11 @@
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
-impl Into<bool> for NvttBoolean {
-    fn into(self) -> bool {
-        match self {
-            Self::NVTT_True => true,
-            Self::NVTT_False => false,
+impl From<NvttBoolean> for bool {
+    fn from(val: NvttBoolean) -> Self {
+        match val {
+            NvttBoolean::NVTT_True => true,
+            NvttBoolean::NVTT_False => false,
         }
     }
 }
