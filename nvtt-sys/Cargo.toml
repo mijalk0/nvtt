@@ -1,0 +1,24 @@
+[package]
+name = "nvtt-sys"
+version = "0.1.0"
+edition = "2021"
+authors = [ "Luka Mijalkovic <luka.mijalkovic3@gmail.com>" ]
+description = "Unsafe bindings for the Nvidia Texture Tools SDK."
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = [ "image_processing", "image", "compression", "texture", "texture_compression", "nvidia", "nvtt" ]
+categories = [ "nvidia", "texture_compression" ]
+rust-version = "1.66"
+
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.63"
+cfg-if = "1"
+
+[dependencies.windows]
+version = "0.43.0"
+features = [ "Win32_UI_Shell", "Win32_Foundation" ]
+
+[dev-dependencies]
+libc = "0.2"
