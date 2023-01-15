@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 authors = [ "Luka Mijalkovic <luka.mijalkovic3@gmail.com>" ]
 description = "Unsafe bindings for the Nvidia Texture Tools SDK."
-repository = "https://github.com/mijalk0/nvtt/nvtt-sys"
+repository = "https://github.com/mijalk0/nvtt"
 license = "MIT"
 readme = "README.md"
-keywords = [ "image_processing", "image", "compression", "texture", "texture_compression", "nvidia", "nvtt" ]
+keywords = [ "image_processing", "texture", "texture_compression", "nvidia", "nvtt" ]
 categories = [ "nvidia", "texture_compression" ]
 rust-version = "1.66"
 
