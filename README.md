@@ -29,6 +29,7 @@ Currently there is no file I/O support, no low-level (`nvtt_lowlevel.h`) wrapper
 # Using nvtt
 
 ``` rust
+# use nvtt_rs::{Context, CompressionOptions, CUDA_SUPPORTED, Format, InputFormat, OutputOptions, Surface};
 // Create a surface
 let input = InputFormat::Bgra8Ub {
     data: &[0u8; 16 * 16 * 4],
