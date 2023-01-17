@@ -11,7 +11,7 @@ keywords = [ "image_processing", "texture", "texture_compression", "nvidia", "nv
 rust-version = "1.66"
 
 [dependencies]
-nvtt-sys = { version = "0.5.0", path = "../nvtt_sys" }
+nvtt_sys = { version = "0.5.1", path = "../nvtt-sys" }
 cfg-if = "1"
 thiserror = "1"
 lazy_static = "1.4"
