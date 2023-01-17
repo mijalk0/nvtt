@@ -8,11 +8,10 @@ repository = "https://github.com/mijalk0/nvtt"
 license = "MIT"
 readme = "README.md"
 keywords = [ "image_processing", "texture", "texture_compression", "nvidia", "nvtt" ]
-categories = [ "nvidia", "texture_compression" ]
 rust-version = "1.66"
 
 [dependencies]
-nvtt-sys = { version = "0.5.0", path = "../nvtt-sys" }
+nvtt-sys = { version = "0.5.0", path = "../nvtt_sys" }
 cfg-if = "1"
 thiserror = "1"
 lazy_static = "1.4"
