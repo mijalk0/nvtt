@@ -1,5 +1,5 @@
 [package]
-name = "nvtt-rs"
+name = "nvtt_rs"
 version = "0.10.0"
 edition = "2021"
 authors = [ "Luka Mijalkovic <luka.mijalkovic3@gmail.com>" ]
