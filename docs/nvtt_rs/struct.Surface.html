@@ -1,0 +1,854 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="One level of a 2D or 3D texture with red, green, blue, and alpha channels."><meta name="keywords" content="rust, rustlang, rust-lang, Surface"><title>Surface in nvtt_rs - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-749885d589dd4e13.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../static.files/light-d695502c06d5afea.css"><link rel="stylesheet" disabled href="../static.files/dark-aa222ca57e08648b.css"><link rel="stylesheet" disabled href="../static.files/ayu-d5b7bae5e01694db.css"><script id="default-settings" ></script><script src="../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-4a084badb5778746.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc struct"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../nvtt_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></div></a><h2></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../nvtt_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></div></a><h2 class="location"><a href="#">Surface</a></h2><div class="sidebar-elems"><section><h3><a href="#implementations">Methods</a></h3><ul class="block"><li><a href="#method.abs">abs</a></li><li><a href="#method.add_channel">add_channel</a></li><li><a href="#method.alpha_mode">alpha_mode</a></li><li><a href="#method.alpha_test_coverage">alpha_test_coverage</a></li><li><a href="#method.average">average</a></li><li><a href="#method.binarize">binarize</a></li><li><a href="#method.blend">blend</a></li><li><a href="#method.block_scale_cocg">block_scale_cocg</a></li><li><a href="#method.bounds">bounds</a></li><li><a href="#method.build_next_mipmap">build_next_mipmap</a></li><li><a href="#method.build_next_mipmap_color">build_next_mipmap_color</a></li><li><a href="#method.can_make_next_mipmap">can_make_next_mipmap</a></li><li><a href="#method.canvas_resize">canvas_resize</a></li><li><a href="#method.channel">channel</a></li><li><a href="#method.channel_from_gamma">channel_from_gamma</a></li><li><a href="#method.channel_mut">channel_mut</a></li><li><a href="#method.channel_to_gamma">channel_to_gamma</a></li><li><a href="#method.clamp">clamp</a></li><li><a href="#method.convolve">convolve</a></li><li><a href="#method.convolve_slice">convolve_slice</a></li><li><a href="#method.copy">copy</a></li><li><a href="#method.copy_channel">copy_channel</a></li><li><a href="#method.count_mipmaps">count_mipmaps</a></li><li><a href="#method.count_mipmaps_until">count_mipmaps_until</a></li><li><a href="#method.create_sub_image">create_sub_image</a></li><li><a href="#method.data">data</a></li><li><a href="#method.data_mut">data_mut</a></li><li><a href="#method.demultiply_alpha">demultiply_alpha</a></li><li><a href="#method.depth">depth</a></li><li><a href="#method.fill">fill</a></li><li><a href="#method.flip_x">flip_x</a></li><li><a href="#method.flip_y">flip_y</a></li><li><a href="#method.flip_z">flip_z</a></li><li><a href="#method.from_gamma">from_gamma</a></li><li><a href="#method.from_log_scale">from_log_scale</a></li><li><a href="#method.from_luvw">from_luvw</a></li><li><a href="#method.from_rgbe">from_rgbe</a></li><li><a href="#method.from_rgbm">from_rgbm</a></li><li><a href="#method.from_srgb">from_srgb</a></li><li><a href="#method.from_ycocg">from_ycocg</a></li><li><a href="#method.gpu_data_ptr">gpu_data_ptr</a></li><li><a href="#method.height">height</a></li><li><a href="#method.histogram">histogram</a></li><li><a href="#method.image">image</a></li><li><a href="#method.image_split">image_split</a></li><li><a href="#method.is_normal_map">is_normal_map</a></li><li><a href="#method.on_cpu">on_cpu</a></li><li><a href="#method.on_gpu">on_gpu</a></li><li><a href="#method.pack_normals">pack_normals</a></li><li><a href="#method.premultiply_alpha">premultiply_alpha</a></li><li><a href="#method.quantize">quantize</a></li><li><a href="#method.range">range</a></li><li><a href="#method.reconstruct_normals">reconstruct_normals</a></li><li><a href="#method.resize_filtered">resize_filtered</a></li><li><a href="#method.resize_make_square">resize_make_square</a></li><li><a href="#method.resize_rounded">resize_rounded</a></li><li><a href="#method.scale_alpha_to_coverage">scale_alpha_to_coverage</a></li><li><a href="#method.scale_bias">scale_bias</a></li><li><a href="#method.set_alpha_mode">set_alpha_mode</a></li><li><a href="#method.set_atlas_border">set_atlas_border</a></li><li><a href="#method.set_border">set_border</a></li><li><a href="#method.set_normal_map">set_normal_map</a></li><li><a href="#method.set_wrap_mode">set_wrap_mode</a></li><li><a href="#method.swizzle">swizzle</a></li><li><a href="#method.tex_type">tex_type</a></li><li><a href="#method.texel">texel</a></li><li><a href="#method.texel_mut">texel_mut</a></li><li><a href="#method.to_clean_normal_map">to_clean_normal_map</a></li><li><a href="#method.to_cpu">to_cpu</a></li><li><a href="#method.to_gamma">to_gamma</a></li><li><a href="#method.to_gpu">to_gpu</a></li><li><a href="#method.to_grey_scale">to_grey_scale</a></li><li><a href="#method.to_lm">to_lm</a></li><li><a href="#method.to_log_scale">to_log_scale</a></li><li><a href="#method.to_luvw">to_luvw</a></li><li><a href="#method.to_normal_map">to_normal_map</a></li><li><a href="#method.to_rgbe">to_rgbe</a></li><li><a href="#method.to_rgbm">to_rgbm</a></li><li><a href="#method.to_srgb">to_srgb</a></li><li><a href="#method.to_xenon_srgb">to_xenon_srgb</a></li><li><a href="#method.to_ycocg">to_ycocg</a></li><li><a href="#method.tonemap">tonemap</a></li><li><a href="#method.transform">transform</a></li><li><a href="#method.transform_normals">transform_normals</a></li><li><a href="#method.unpack_normals">unpack_normals</a></li><li><a href="#method.width">width</a></li><li><a href="#method.wrap_mode">wrap_mode</a></li></ul><h3><a href="#trait-implementations">Trait Implementations</a></h3><ul class="block"><li><a href="#impl-Clone-for-Surface">Clone</a></li><li><a href="#impl-Drop-for-Surface">Drop</a></li></ul><h3><a href="#synthetic-implementations">Auto Trait Implementations</a></h3><ul class="block"><li><a href="#impl-RefUnwindSafe-for-Surface">RefUnwindSafe</a></li><li><a href="#impl-Send-for-Surface">!Send</a></li><li><a href="#impl-Sync-for-Surface">!Sync</a></li><li><a href="#impl-Unpin-for-Surface">Unpin</a></li><li><a href="#impl-UnwindSafe-for-Surface">UnwindSafe</a></li></ul><h3><a href="#blanket-implementations">Blanket Implementations</a></h3><ul class="block"><li><a href="#impl-Any-for-Surface">Any</a></li><li><a href="#impl-Borrow%3CT%3E-for-Surface">Borrow&lt;T&gt;</a></li><li><a href="#impl-BorrowMut%3CT%3E-for-Surface">BorrowMut&lt;T&gt;</a></li><li><a href="#impl-From%3CT%3E-for-Surface">From&lt;T&gt;</a></li><li><a href="#impl-Into%3CU%3E-for-Surface">Into&lt;U&gt;</a></li><li><a href="#impl-ToOwned-for-Surface">ToOwned</a></li><li><a href="#impl-TryFrom%3CU%3E-for-Surface">TryFrom&lt;U&gt;</a></li><li><a href="#impl-TryInto%3CU%3E-for-Surface">TryInto&lt;U&gt;</a></li></ul></section><h2><a href="index.html">In nvtt_rs</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn">Struct <a href="index.html">nvtt_rs</a>::<wbr><a class="struct" href="#">Surface</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../src/nvtt_rs/lib.rs.html#914">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><div class="item-decl"><pre class="rust struct"><code><div class="code-attribute">#[repr(transparent)]</div>pub struct Surface(_);</code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>One level of a 2D or 3D texture with red, green, blue, and alpha channels.</p>
+<p>Surfaces store some additional properties, such as their width, height, depth, wrap mode, alpha mode, and whether they represent a normal map.</p>
+<p>Texture data is stored non-interleaved; that is, all the red channel data is stored first, followed by the green channel data, and so on.</p>
+<h2 id="performance-notes"><a href="#performance-notes">Performance Notes</a></h2>
+<p>Surfaces use reference-counted pointers to image data. This means that multiple Surfaces can reference the same data. This is handled automatically by NVTT’s image processing routines. For instance, after the following piece of code,</p>
+
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">let </span>s1 = Surface::image(...);
+<span class="kw">let </span><span class="kw-2">mut </span>s2 = s1.clone();</code></pre></div>
+<p>surfaces <code>s1</code> and <code>s2</code> will have the same <a href="struct.Surface.html#method.data"><code>data()</code></a> pointer. Cloning the underlying data is handled automatically: for instance, after</p>
+
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code>s2.to_srgb();</code></pre></div>
+<p><code>s2</code> will have a new <a href="struct.Surface.html#method.data"><code>data()</code></a> pointer, and <code>s1</code> will be unchanged.</p>
+</div></details><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="rustdoc-toggle implementors-toggle" open><summary><section id="impl-Surface" class="impl has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#928-3086">source</a><a href="#impl-Surface" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.image" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#999-1040">source</a><h4 class="code-header">pub fn <a href="#method.image" class="fn">image</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;input: <a class="enum" href="enum.InputFormat.html" title="enum nvtt_rs::InputFormat">InputFormat</a>&lt;'_&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;w: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;h: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;d: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a><br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="enum" href="enum.SurfaceError.html" title="enum nvtt_rs::SurfaceError">SurfaceError</a>&gt;</h4></section></summary><div class="docblock"><p>Constructs a <a href="struct.Surface.html" title="Surface"><code>Surface</code></a> from an uncompressed byte slice of all channels. Bytes should be in native
+endianness.</p>
+<p>Data must be stored in <code>[c, z, y, x]</code> order. That is, channel 0’s data is first, then channel 1’s
+data, and so on. More specifically, the value of a channel <code>c</code> at texel <code>(x, y, z)</code> is at index
+<code>((c * d + z) * h + y) * w + x</code>. Where <code>w</code>, <code>h</code>, and <code>d</code> are input width, height, and depth
+of the image respectively.</p>
+<p>If the input slice is not capable of holding <code>w * h * d</code> texels in the specified format,
+this will return <a href="enum.SurfaceError.html#variant.InvalidDimensions" title="SurfaceError::InvalidDimensions"><code>SurfaceError::InvalidDimensions</code></a>. If the slice is longer than necessary,
+extra bytes remain unread.</p>
+<p>Formats without four R, G, B, and A channels (currently only <a href="enum.InputFormat.html#variant.R32f" title="InputFormat::R32f"><code>InputFormat::R32f</code></a>) will have
+non-existent channels filled with the color <code>[0, 0, 0, 0]</code>.</p>
+<h5 id="panics"><a href="#panics">Panics</a></h5>
+<p>Panics if any of <code>w</code>, <code>h</code>, or <code>d</code> are <code>0</code>.</p>
+<h5 id="examples"><a href="#examples">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = InputFormat::Bgra8Ub {
+    data: <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">0</span>],
+    unsigned_to_signed:  <span class="bool-val">false</span>,
+};
+<span class="kw">let </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.channel(Channel::R)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.channel(Channel::G)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::B)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::A)[<span class="number">0</span>]);</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = InputFormat::Bgra8Ub {
+    data: <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">0</span>],
+    unsigned_to_signed:  <span class="bool-val">true</span>,
+};
+<span class="kw">let </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.channel(Channel::R)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.channel(Channel::G)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.channel(Channel::B)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.channel(Channel::A)[<span class="number">0</span>]);</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>r_bytes = <span class="number">3.0_f32</span>.to_ne_bytes();
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>r_bytes);
+<span class="kw">let </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(<span class="number">3.0</span>, surface.channel(Channel::R)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::G)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::B)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::A)[<span class="number">0</span>]);</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = InputFormat::Bgra8Ub {
+    data: <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],
+    unsigned_to_signed:  <span class="bool-val">false</span>,
+};
+<span class="kw">let </span>surface = Surface::image(input, <span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>);
+<span class="macro">assert!</span>(surface.is_err());</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.image_split" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1099-1171">source</a><h4 class="code-header">pub fn <a href="#method.image_split" class="fn">image_split</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;input: <a class="enum" href="enum.SplitInputFormat.html" title="enum nvtt_rs::SplitInputFormat">SplitInputFormat</a>&lt;'_&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;w: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;h: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;d: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a><br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="enum" href="enum.SurfaceError.html" title="enum nvtt_rs::SurfaceError">SurfaceError</a>&gt;</h4></section></summary><div class="docblock"><p>Constructs a <a href="struct.Surface.html" title="Surface"><code>Surface</code></a> from uncompressed byte slices of all channels. Bytes should be in native endianness.</p>
+<p>Data must be stored in <code>[z, y, x]</code> order. More specifically, the value of any channel at texel <code>(x, y, z)</code>
+is at index <code>((d + z) * h + y) * w + x</code>. Where <code>w</code>, <code>h</code>, and <code>d</code> are input width, height, and depth of the
+image respectively.</p>
+<p>If any input slice is not capable of holding <code>w * h * d</code> texels in the specified format, this will return
+<a href="enum.SurfaceError.html#variant.InvalidDimensions" title="SurfaceError::InvalidDimensions"><code>SurfaceError::InvalidDimensions</code></a>. If the slice is longer than necessary, extra bytes remain unread.</p>
+<p>Formats without four R, G, B, and A channels (currently only <a href="enum.SplitInputFormat.html#variant.R32f" title="SplitInputFormat::R32f"><code>SplitInputFormat::R32f</code></a>) will have non-existent
+channels filled with the color <code>[0, 0, 0, 0]</code>.</p>
+<h5 id="panics-1"><a href="#panics-1">Panics</a></h5>
+<p>Panics if any of <code>w</code>, <code>h</code>, or <code>d</code> are 0.</p>
+<h5 id="examples-1"><a href="#examples-1">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = SplitInputFormat::Bgra8Ub {
+    b: <span class="kw-2">&amp;</span>[<span class="number">0</span>],
+    g: <span class="kw-2">&amp;</span>[<span class="number">255</span>],
+    r: <span class="kw-2">&amp;</span>[<span class="number">255</span>],
+    a: <span class="kw-2">&amp;</span>[<span class="number">0</span>],
+};
+<span class="kw">let </span>surface = Surface::image_split(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.channel(Channel::R)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.channel(Channel::G)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::B)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::A)[<span class="number">0</span>]);</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>r_bytes = <span class="number">3.0_f32</span>.to_ne_bytes();
+<span class="kw">let </span>input = SplitInputFormat::R32f(<span class="kw-2">&amp;</span>r_bytes);
+<span class="kw">let </span>surface = Surface::image_split(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(<span class="number">3.0</span>, surface.channel(Channel::R)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::G)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::B)[<span class="number">0</span>]);
+<span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.channel(Channel::A)[<span class="number">0</span>]);</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = SplitInputFormat::Bgra8Ub {
+    b: <span class="kw-2">&amp;</span>[<span class="number">0</span>],
+    g: <span class="kw-2">&amp;</span>[<span class="number">0</span>],
+    r: <span class="kw-2">&amp;</span>[<span class="number">0</span>],
+    a: <span class="kw-2">&amp;</span>[<span class="number">0</span>],
+};
+<span class="kw">let </span>surface = Surface::image_split(input, <span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>);
+<span class="macro">assert!</span>(surface.is_err());</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.width" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1174-1176">source</a><h4 class="code-header">pub fn <a href="#method.width" class="fn">width</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></h4></section></summary><div class="docblock"><p>Returns the width (X size) of the surface in pixels.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.height" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1179-1181">source</a><h4 class="code-header">pub fn <a href="#method.height" class="fn">height</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></h4></section></summary><div class="docblock"><p>Returns the height (Y size) of the surface in pixels.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.depth" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1184-1186">source</a><h4 class="code-header">pub fn <a href="#method.depth" class="fn">depth</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></h4></section></summary><div class="docblock"><p>Returns the depth (Z size) of the surface in pixels.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.on_cpu" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1214-1216">source</a><h4 class="code-header">pub fn <a href="#method.on_cpu" class="fn">on_cpu</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>cuda</code></strong> only.</div></span></summary><div class="docblock"><p>Returns true if data is currently held on the CPU. This is the same as checking if
+<a href="struct.Surface.html#method.gpu_data_ptr" title="Surface::gpu_data_ptr()"><code>Surface::gpu_data_ptr()</code></a> is null.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    <span class="macro">assert!</span>(surface.on_cpu());
+    <span class="macro">assert!</span>(surface.gpu_data_ptr().is_null());
+
+    surface.to_gpu();
+    <span class="macro">assert!</span>(!surface.on_cpu());
+    <span class="macro">assert!</span>(!surface.gpu_data_ptr().is_null());
+
+    surface.to_cpu();
+    <span class="macro">assert!</span>(surface.on_cpu());
+    <span class="macro">assert!</span>(surface.gpu_data_ptr().is_null());
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.on_gpu" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1244-1246">source</a><h4 class="code-header">pub fn <a href="#method.on_gpu" class="fn">on_gpu</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>cuda</code></strong> only.</div></span></summary><div class="docblock"><p>Returns true if data is currently held to the GPU. This is the same as checking if
+<a href="struct.Surface.html#method.gpu_data_ptr" title="Surface::gpu_data_ptr()"><code>Surface::gpu_data_ptr()</code></a> is not null.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    <span class="macro">assert!</span>(!surface.on_gpu());
+    <span class="macro">assert!</span>(surface.gpu_data_ptr().is_null());
+
+    surface.to_gpu();
+    <span class="macro">assert!</span>(surface.on_gpu());
+    <span class="macro">assert!</span>(!surface.gpu_data_ptr().is_null());
+
+    surface.to_cpu();
+    <span class="macro">assert!</span>(!surface.on_gpu());
+    <span class="macro">assert!</span>(surface.gpu_data_ptr().is_null());
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_gpu" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1288-1298">source</a><h4 class="code-header">pub fn <a href="#method.to_gpu" class="fn">to_gpu</a>(&amp;mut self)</h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>cuda</code></strong> only.</div></span></summary><div class="docblock"><p>Copies data from CPU to GPU, enabling CUDA for all subsequent operations. Does nothing if
+data is already on the GPU.</p>
+<h5 id="panics-2"><a href="#panics-2">Panics</a></h5>
+<p>Panics if CUDA is not supported by this device.</p>
+<h5 id="examples-2"><a href="#examples-2">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    surface.to_gpu();
+    <span class="macro">assert!</span>(surface.on_gpu());
+}</code></pre></div>
+
+<div class="example-wrap should_panic"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">if </span>!<span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    <span class="comment">// Panics
+    </span>surface.to_gpu();
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_cpu" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1338-1344">source</a><h4 class="code-header">pub fn <a href="#method.to_cpu" class="fn">to_cpu</a>(&amp;mut self)</h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>cuda</code></strong> only.</div></span></summary><div class="docblock"><p>Copies data from GPU to CPU, disabling CUDA operations. Does nothing if data is already on
+the CPU.</p>
+<h5 id="examples-3"><a href="#examples-3">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    surface.to_gpu();
+    <span class="macro">assert!</span>(surface.on_gpu());
+
+    surface.to_cpu();
+    <span class="macro">assert!</span>(surface.on_cpu());
+}</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">if </span>!<span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    <span class="macro">assert!</span>(surface.on_cpu());
+
+    surface.to_cpu();
+    <span class="macro">assert!</span>(surface.on_cpu());
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.gpu_data_ptr" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1374-1376">source</a><h4 class="code-header">pub fn <a href="#method.gpu_data_ptr" class="fn">gpu_data_ptr</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></h4></section><span class="item-info"><div class="stab portability">Available on <strong>crate feature <code>cuda</code></strong> only.</div></span></summary><div class="docblock"><p>Returns a CUDA pointer to image data on GPU, with the same layout as <a href="struct.Surface.html#method.data" title="Surface::data()"><code>Surface::data()</code></a>. If data is
+not currently stored on the GPU, this is a null pointer.</p>
+<h5 id="safety"><a href="#safety">Safety</a></h5>
+<p>It is undefined behaviour to derefence this pointer on the CPU, as it is not a CPU pointer.</p>
+
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+    <span class="kw">let </span>input_format = InputFormat::Bgra8Ub {
+        data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>],
+        unsigned_to_signed: <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input_format, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+    surface.to_gpu();
+
+    <span class="macro">assert!</span>(!surface.gpu_data_ptr().is_null());
+
+    <span class="comment">// Undefined behaviour
+    </span><span class="kw">unsafe </span>{
+        <span class="kw">let </span>x = <span class="kw-2">*</span>surface.gpu_data_ptr();
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.texel" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1384-1392">source</a><h4 class="code-header">pub fn <a href="#method.texel" class="fn">texel</a>(&amp;self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, x: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, y: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, z: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></h4></section></summary><div class="docblock"><p>Returns the value of the channel for the texel at <code>(x, y, z)</code>. This is just a wrapper
+around <a href="struct.Surface.html#method.data" title="Surface::data()"><code>Surface::data()</code></a> for easier indexing. See <a href="struct.Surface.html#method.data" title="Surface::data()"><code>Surface::data()</code></a> for more details.</p>
+<h5 id="panics-3"><a href="#panics-3">Panics</a></h5>
+<p>Panics if <code>(x, y, z)</code> is out of bounds.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.texel_mut" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1401-1409">source</a><h4 class="code-header">pub fn <a href="#method.texel_mut" class="fn">texel_mut</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, x: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, y: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, z: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; &amp;mut <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></h4></section></summary><div class="docblock"><p>Returns a mutable reference to the value of the channel for the texel at <code>(x, y, z)</code>.
+This is just a wrapper around <a href="struct.Surface.html#method.data_mut" title="Surface::data_mut()"><code>Surface::data_mut()</code></a> for easier indexing. See
+<a href="struct.Surface.html#method.data_mut" title="Surface::data_mut()"><code>Surface::data_mut()</code></a> for more details.</p>
+<h5 id="panics-4"><a href="#panics-4">Panics</a></h5>
+<p>Panics if <code>(x, y, z)</code> is out of bounds.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.data" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1455-1461">source</a><h4 class="code-header">pub fn <a href="#method.data" class="fn">data</a>(&amp;self) -&gt; &amp;[<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>]</h4></section></summary><div class="docblock"><p>Returns image data as a slice in <code>[c, z, y, x]</code> order. That is, the value of a channel
+<code>c</code> at texel <code>(x, y, z)</code> is at index <code>((c * d + z) * h + y) * w + x</code>.</p>
+<h5 id="notes"><a href="#notes">Notes</a></h5>
+<p>If data is on the GPU, this will perform a GPU-CPU copy. CUDA will remain enabled.</p>
+<h5 id="examples-4"><a href="#examples-4">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>r_bytes = <span class="number">1.0_f32</span>.to_ne_bytes();
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>r_bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span>{
+    <span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+        surface.to_gpu();
+        <span class="macro">assert!</span>(surface.on_gpu());
+    } <span class="kw">else </span>{
+        <span class="macro">assert!</span>(surface.on_cpu());
+    }
+}
+
+<span class="comment">// Incurs a GPU-CPU copy
+</span><span class="macro">assert_eq!</span>(<span class="number">4</span>, surface.data().len());
+
+<span class="comment">// Incurs another GPU-CPU copy
+</span><span class="kw">let </span>x = surface.data()[<span class="number">0</span>];
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, x);
+<span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, x);
+
+<span class="comment">// Remains on GPU
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span>{
+    <span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+        <span class="macro">assert!</span>(surface.on_gpu());
+    } <span class="kw">else </span>{
+        <span class="macro">assert!</span>(surface.on_cpu());
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.data_mut" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1495-1507">source</a><h4 class="code-header">pub fn <a href="#method.data_mut" class="fn">data_mut</a>(&amp;mut self) -&gt; &amp;mut [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>]</h4></section></summary><div class="docblock"><p>Returns image data as a mutable slice in <code>[c, z, y, x]</code> order. That is, the value of a channel
+<code>c</code> at texel <code>(x, y, z)</code> is at index <code>((c * d + z) * h + y) * w + x</code>.</p>
+<h5 id="notes-1"><a href="#notes-1">Notes</a></h5>
+<p>If data is on the GPU, this will perform a GPU-CPU copy. CUDA will be disabled, however it
+can be re-enabled with <a href="struct.Surface.html#method.to_gpu" title="Surface::to_gpu()"><code>Surface::to_gpu()</code></a>.</p>
+<h5 id="examples-5"><a href="#examples-5">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>r_bytes = <span class="number">1.0_f32</span>.to_ne_bytes();
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>r_bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span>{
+    <span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+        surface.to_gpu();
+        <span class="macro">assert!</span>(surface.on_gpu());
+    } <span class="kw">else </span>{
+        <span class="macro">assert!</span>(surface.on_cpu());
+    }
+}
+
+<span class="comment">// Moves to CPU
+</span>surface.data_mut()[<span class="number">0</span>] = <span class="number">0.0</span>;
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="macro">assert!</span>(surface.on_cpu());</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.channel" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1557-1565">source</a><h4 class="code-header">pub fn <a href="#method.channel" class="fn">channel</a>(&amp;self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>) -&gt; &amp;[<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>]</h4></section></summary><div class="docblock"><p>Returns a slice of image data for <code>channel</code> in <code>[z, y, x]</code> order. That is, the value of
+texel <code>(x, y, z)</code> is at index <code>((d + z) * h + y) * w + x</code>.</p>
+<h5 id="notes-2"><a href="#notes-2">Notes</a></h5>
+<p>If data is on the GPU, this will perform a GPU-CPU copy. CUDA will remain enabled.</p>
+<h5 id="examples-6"><a href="#examples-6">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>r_bytes = <span class="number">1.0_f32</span>.to_ne_bytes();
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>r_bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span>{
+    <span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+        surface.to_gpu();
+        <span class="macro">assert!</span>(surface.on_gpu());
+    } <span class="kw">else </span>{
+        <span class="macro">assert!</span>(surface.on_cpu());
+    }
+}
+
+<span class="comment">// Each call incurs a GPU-CPU copy
+</span><span class="macro">assert_eq!</span>(<span class="number">1</span>, surface.channel(Channel::R).len());
+<span class="macro">assert_eq!</span>(<span class="number">1</span>, surface.channel(Channel::G).len());
+<span class="macro">assert_eq!</span>(<span class="number">1</span>, surface.channel(Channel::B).len());
+<span class="macro">assert_eq!</span>(<span class="number">1</span>, surface.channel(Channel::A).len());
+
+<span class="comment">// Incurs another GPU-CPU copy
+</span><span class="kw">let </span>x = surface.channel(Channel::R)[<span class="number">0</span>];
+<span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, x);
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, x);
+
+<span class="comment">// Remains on GPU
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span>{
+    <span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+        surface.to_gpu();
+        <span class="macro">assert!</span>(surface.on_gpu());
+    } <span class="kw">else </span>{
+        <span class="macro">assert!</span>(surface.on_cpu());
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.channel_mut" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1599-1613">source</a><h4 class="code-header">pub fn <a href="#method.channel_mut" class="fn">channel_mut</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>) -&gt; &amp;mut [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>]</h4></section></summary><div class="docblock"><p>Returns a mutable slice of image data for <code>channel</code> in <code>[z, y, x]</code> order. That is, the value of
+texel <code>(x, y, z)</code> is at index <code>((d + z) * h + y) * w + x</code>.</p>
+<h5 id="notes-3"><a href="#notes-3">Notes</a></h5>
+<p>If data is on the GPU, this will perform a GPU-CPU copy. CUDA will be disabled, however it
+can be re-enabled with <a href="struct.Surface.html#method.to_gpu" title="Surface::to_gpu()"><code>Surface::to_gpu()</code></a>.</p>
+<h5 id="examples-7"><a href="#examples-7">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>r_bytes = <span class="number">1.0_f32</span>.to_ne_bytes();
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>r_bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span>{
+    <span class="kw">if </span><span class="kw-2">*</span>CUDA_SUPPORTED {
+        surface.to_gpu();
+        <span class="macro">assert!</span>(surface.on_gpu());
+    } <span class="kw">else </span>{
+        <span class="macro">assert!</span>(surface.on_cpu());
+    }
+}
+
+<span class="comment">// Moves to CPU
+</span>surface.channel_mut(Channel::R)[<span class="number">0</span>] = <span class="number">0.0</span>;
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;cuda&quot;</span>)]
+</span><span class="macro">assert!</span>(surface.on_cpu());</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.tex_type" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1616-1618">source</a><h4 class="code-header">pub fn <a href="#method.tex_type" class="fn">tex_type</a>(&amp;self) -&gt; <a class="enum" href="enum.TextureType.html" title="enum nvtt_rs::TextureType">TextureType</a></h4></section></summary><div class="docblock"><p>Returns <a href="enum.TextureType.html#variant.D2" title="TextureType::D2"><code>TextureType::D2</code></a> if <code>depth == 1</code>, and <a href="enum.TextureType.html#variant.D3" title="TextureType::D3"><code>TextureType::D3</code></a> otherwise.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.wrap_mode" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1622-1624">source</a><h4 class="code-header">pub fn <a href="#method.wrap_mode" class="fn">wrap_mode</a>(&amp;self) -&gt; <a class="enum" href="enum.WrapMode.html" title="enum nvtt_rs::WrapMode">WrapMode</a></h4></section></summary><div class="docblock"><p>Returns the <a href="enum.WrapMode.html" title="WrapMode"><code>WrapMode</code></a> of this surface. Note that <a href="enum.WrapMode.html" title="WrapMode"><code>WrapMode</code></a> can affect operations such as
+<a href="struct.Surface.html#method.build_next_mipmap" title="Surface::build_next_mipmap()"><code>Surface::build_next_mipmap()</code></a> or <a href="struct.Surface.html#method.convolve" title="Surface::convolve()"><code>Surface::convolve()</code></a>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.alpha_mode" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1628-1630">source</a><h4 class="code-header">pub fn <a href="#method.alpha_mode" class="fn">alpha_mode</a>(&amp;self) -&gt; <a class="enum" href="enum.AlphaMode.html" title="enum nvtt_rs::AlphaMode">AlphaMode</a></h4></section></summary><div class="docblock"><p>Returns the <a href="enum.AlphaMode.html" title="AlphaMode"><code>AlphaMode</code></a> of this surface. This is for output headers, e.g. for usage in <a href="struct.Context.html#method.output_header" title="Context::output_header"><code>Context::output_header</code></a>.
+It does not affect calculations.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.is_normal_map" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1634-1636">source</a><h4 class="code-header">pub fn <a href="#method.is_normal_map" class="fn">is_normal_map</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Returns the true if this surface represents a normal map. This is for output headers,
+e.g. for usage in <a href="struct.Context.html#method.output_header" title="Context::output_header"><code>Context::output_header</code></a>. It does not affect calculations.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_wrap_mode" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1640-1644">source</a><h4 class="code-header">pub fn <a href="#method.set_wrap_mode" class="fn">set_wrap_mode</a>(&amp;mut self, wrap_mode: <a class="enum" href="enum.WrapMode.html" title="enum nvtt_rs::WrapMode">WrapMode</a>)</h4></section></summary><div class="docblock"><p>Set the <a href="enum.WrapMode.html" title="WrapMode"><code>WrapMode</code></a> of this surface. Note that <a href="enum.WrapMode.html" title="WrapMode"><code>WrapMode</code></a> can affect operations such as
+<a href="struct.Surface.html#method.build_next_mipmap" title="Surface::build_next_mipmap()"><code>Surface::build_next_mipmap()</code></a> or <a href="struct.Surface.html#method.convolve" title="Surface::convolve()"><code>Surface::convolve()</code></a>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_alpha_mode" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1648-1652">source</a><h4 class="code-header">pub fn <a href="#method.set_alpha_mode" class="fn">set_alpha_mode</a>(&amp;mut self, alpha_mode: <a class="enum" href="enum.AlphaMode.html" title="enum nvtt_rs::AlphaMode">AlphaMode</a>)</h4></section></summary><div class="docblock"><p>Set the <a href="enum.AlphaMode.html" title="AlphaMode"><code>AlphaMode</code></a> of this surface. This is for output headers, e.g. for usage in <a href="struct.Context.html#method.output_header" title="Context::output_header"><code>Context::output_header</code></a>.
+It does not affect calculations.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_normal_map" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1656-1660">source</a><h4 class="code-header">pub fn <a href="#method.set_normal_map" class="fn">set_normal_map</a>(&amp;mut self, is_normal_map: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>)</h4></section></summary><div class="docblock"><p>Set whether this surface represents a normal map. This is for output headers,
+e.g. for usage in <a href="struct.Context.html#method.output_header" title="Context::output_header"><code>Context::output_header</code></a>. It does not affect calculations.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.flip_x" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1663-1667">source</a><h4 class="code-header">pub fn <a href="#method.flip_x" class="fn">flip_x</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Flip along the X axis.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.flip_y" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1670-1674">source</a><h4 class="code-header">pub fn <a href="#method.flip_y" class="fn">flip_y</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Flip along the Y axis.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.flip_z" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1677-1681">source</a><h4 class="code-header">pub fn <a href="#method.flip_z" class="fn">flip_z</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Flip along the Z axis.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.copy_channel" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1685-1709">source</a><h4 class="code-header">pub fn <a href="#method.copy_channel" class="fn">copy_channel</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self,<br>&nbsp;&nbsp;&nbsp;&nbsp;src_channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;dst_channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a><br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="enum" href="enum.SurfaceError.html" title="enum nvtt_rs::SurfaceError">SurfaceError</a>&gt;</h4></section></summary><div class="docblock"><p>Copy <code>src_channel</code> from <code>other</code> to <code>dst_channel</code> of this surface. If channels are
+not the same length, this returns <a href="enum.SurfaceError.html#variant.InvalidDimensions" title="SurfaceError::InvalidDimensions"><code>SurfaceError::InvalidDimensions</code></a></p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.add_channel" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1713-1739">source</a><h4 class="code-header">pub fn <a href="#method.add_channel" class="fn">add_channel</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self,<br>&nbsp;&nbsp;&nbsp;&nbsp;src_channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;dst_channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;scale: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a><br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="enum" href="enum.SurfaceError.html" title="enum nvtt_rs::SurfaceError">SurfaceError</a>&gt;</h4></section></summary><div class="docblock"><p>Add <code>src_channel</code> from <code>other</code> multiplied by <code>scale</code> to <code>dst_channel</code> of this surface.
+If channels are not the same length, this returns <a href="enum.SurfaceError.html#variant.InvalidDimensions" title="SurfaceError::InvalidDimensions"><code>SurfaceError::InvalidDimensions</code></a></p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.bounds" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1744-1753">source</a><h4 class="code-header">pub fn <a href="#method.bounds" class="fn">bounds</a>(&amp;self) -&gt; <a class="struct" href="struct.BoundingBox.html" title="struct nvtt_rs::BoundingBox">BoundingBox</a></h4></section></summary><div class="docblock"><p>Returns the <a href="struct.BoundingBox.html" title="BoundingBox"><code>BoundingBox</code></a> of this surface. <code>min_x/min_y/min_z</code> are all <code>0</code>, while
+<code>max_x</code>, <code>min_y</code>, and <code>min_z</code> are <a href="struct.Surface.html#method.width" title="Surface::width()"><code>Surface::width()</code></a>, <a href="struct.Surface.html#method.height" title="Surface::height()"><code>Surface::height()</code></a>, and
+<a href="struct.Surface.html#method.depth" title="Surface::depth()"><code>Surface::depth()</code></a> respectively.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.copy" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1760-1793">source</a><h4 class="code-header">pub fn <a href="#method.copy" class="fn">copy</a>(&amp;mut self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self, src: <a class="struct" href="struct.BoundingBox.html" title="struct nvtt_rs::BoundingBox">BoundingBox</a>, dst: <a class="struct" href="struct.BoundingBox.html" title="struct nvtt_rs::BoundingBox">BoundingBox</a>)</h4></section></summary><div class="docblock"><p>Copies the bounding box <code>src</code> of <code>other</code> to the bounding box <code>dst</code> of this surface.</p>
+<h5 id="panics-5"><a href="#panics-5">Panics</a></h5>
+<p>Panics if <code>src</code> and <code>dst</code> are not the same shape, or one of the bounding boxes is out of bounds.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.create_sub_image" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1800-1830">source</a><h4 class="code-header">pub fn <a href="#method.create_sub_image" class="fn">create_sub_image</a>(&amp;self, bounds: <a class="struct" href="struct.BoundingBox.html" title="struct nvtt_rs::BoundingBox">BoundingBox</a>) -&gt; Self</h4></section></summary><div class="docblock"><p>Creates a sub image from the subset <code>bounds</code> of this surface.</p>
+<h5 id="panics-6"><a href="#panics-6">Panics</a></h5>
+<p>Panics if this surface does not contain <code>bounds</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.count_mipmaps" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1860-1862">source</a><h4 class="code-header">pub fn <a href="#method.count_mipmaps" class="fn">count_mipmaps</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></h4></section></summary><div class="docblock"><p>Returns the number of mipmaps in a full mipmap chain. Each mip is half the size of the previous,
+rounding down, until and including a <code>1x1</code> mip.</p>
+<p>For instance, a 8x5 surface has mipmaps of size 8x5 (mip 0), 4x2 (mip 1), 2x1 (mip 2), and 1x1 (mip 3),
+so <a href="struct.Surface.html#method.count_mipmaps" title="Surface::count_mipmaps()"><code>Surface::count_mipmaps()</code></a> returns 4.
+A 7x3 surface has mipmaps of size 7x3, 3x1, and 1x1, so <a href="struct.Surface.html#method.count_mipmaps" title="Surface::count_mipmaps()"><code>Surface::count_mipmaps()</code></a> returns 3.</p>
+<p>Same as <a href="struct.Surface.html#method.count_mipmaps_until" title="Surface::count_mipmaps_until()"><code>Surface::count_mipmaps_until()</code></a> with <code>min_size == 1</code></p>
+<h5 id="examples-8"><a href="#examples-8">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">8 </span>* <span class="number">5 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+
+<span class="kw">let </span>surface = Surface::image(input, <span class="number">8</span>, <span class="number">5</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_eq!</span>(<span class="number">4</span>, surface.count_mipmaps())</code></pre></div>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">7 </span>* <span class="number">3 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+
+<span class="kw">let </span>surface = Surface::image(input, <span class="number">7</span>, <span class="number">3</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_eq!</span>(<span class="number">3</span>, surface.count_mipmaps())</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.count_mipmaps_until" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1870-1872">source</a><h4 class="code-header">pub fn <a href="#method.count_mipmaps_until" class="fn">count_mipmaps_until</a>(&amp;self, min_size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></h4></section></summary><div class="docblock"><p>Returns the number of mipmaps in a mipmap chain, stopping when
+<a href="struct.Surface.html#method.can_make_next_mipmap" title="Surface::can_make_next_mipmap()"><code>Surface::can_make_next_mipmap()</code></a> returns false.</p>
+<p>That is, it stops when a <code>1x1x1</code> mip is reached if <code>min_size == 1</code>
+(in which case it is the same as <a href="struct.Surface.html#method.count_mipmaps" title="Surface::count_mipmaps()"><code>Surface::count_mipmaps()</code></a>),
+or stops when the width and height are less than <code>min_size</code> and the depth is <code>1</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.can_make_next_mipmap" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1878-1880">source</a><h4 class="code-header">pub fn <a href="#method.can_make_next_mipmap" class="fn">can_make_next_mipmap</a>(&amp;self, min_size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Returns whether the surface would have a next mip in a mip chain with minimum size <code>min_size</code>.</p>
+<p>That is, it returns false if this surface has size <code>1x1x1</code>, or if the width and height are less
+than <code>min_size</code> and the depth is 1.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.build_next_mipmap" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1917-1933">source</a><h4 class="code-header">pub fn <a href="#method.build_next_mipmap" class="fn">build_next_mipmap</a>(&amp;mut self, filter: <a class="struct" href="struct.Filter.html" title="struct nvtt_rs::Filter">Filter</a>&lt;<a class="enum" href="enum.Mipmap.html" title="enum nvtt_rs::Mipmap">Mipmap</a>&gt;, min_size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Resizes this surface to create the next mip in a mipmap chain.</p>
+<p>Returns false iff the next mip would have been smaller than <code>min_size</code>
+(signaling the end of the mipmap chain).</p>
+<h5 id="examples-9"><a href="#examples-9">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">32 </span>* <span class="number">32 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">32</span>, <span class="number">32</span>, <span class="number">1</span>).unwrap();
+
+<span class="kw">let </span>mipmap_count = surface.count_mipmaps();
+<span class="kw">let </span><span class="kw-2">mut </span>mipmaps = <span class="macro">vec!</span>[surface.clone()];
+<span class="kw">while </span>surface.build_next_mipmap(Filter::mipmap_box(), <span class="number">1</span>) {
+    mipmaps.push(surface.clone());
+}
+
+<span class="macro">assert_eq!</span>(mipmap_count, mipmaps.len() <span class="kw">as </span>u32);
+
+<span class="macro">assert_eq!</span>(mipmaps[<span class="number">0</span>].width(), mipmaps[<span class="number">0</span>].height());
+<span class="macro">assert_eq!</span>(mipmaps[<span class="number">1</span>].width(), mipmaps[<span class="number">1</span>].height());
+<span class="macro">assert_eq!</span>(mipmaps[<span class="number">2</span>].width(), mipmaps[<span class="number">2</span>].height());
+<span class="macro">assert_eq!</span>(mipmaps[<span class="number">3</span>].width(), mipmaps[<span class="number">3</span>].height());
+<span class="macro">assert_eq!</span>(mipmaps[<span class="number">4</span>].width(), mipmaps[<span class="number">4</span>].height());
+<span class="macro">assert_eq!</span>(mipmaps[<span class="number">5</span>].width(), mipmaps[<span class="number">5</span>].height());
+
+<span class="macro">assert_eq!</span>(<span class="number">32</span>, mipmaps[<span class="number">0</span>].width());
+<span class="macro">assert_eq!</span>(<span class="number">16</span>, mipmaps[<span class="number">1</span>].width());
+<span class="macro">assert_eq!</span>(<span class="number">8</span>, mipmaps[<span class="number">2</span>].width());
+<span class="macro">assert_eq!</span>(<span class="number">4</span>, mipmaps[<span class="number">3</span>].width());
+<span class="macro">assert_eq!</span>(<span class="number">2</span>, mipmaps[<span class="number">4</span>].width());
+<span class="macro">assert_eq!</span>(<span class="number">1</span>, mipmaps[<span class="number">5</span>].width());</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.build_next_mipmap_color" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1962-1971">source</a><h4 class="code-header">pub fn <a href="#method.build_next_mipmap_color" class="fn">build_next_mipmap_color</a>(&amp;mut self, rgba: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>]) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Replaces this surface with a surface the size of the next mip in a mip chain
+(half the width and height), but with each channel cleared to a constant value.</p>
+<h5 id="examples-10"><a href="#examples-10">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">32 </span>* <span class="number">32 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">32</span>, <span class="number">32</span>, <span class="number">1</span>).unwrap();
+
+<span class="kw">let </span>rgba = [<span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">1.0</span>];
+surface.build_next_mipmap_color(rgba);
+
+<span class="macro">assert_eq!</span>(<span class="number">16</span>, surface.width());
+<span class="macro">assert_eq!</span>(<span class="number">16</span>, surface.height());
+
+<span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..<span class="number">16 </span>{
+    <span class="kw">for </span>y <span class="kw">in </span><span class="number">0</span>..<span class="number">16 </span>{
+        <span class="macro">assert_relative_eq!</span>(<span class="number">0.25</span>, surface.texel(Channel::R, x, y, <span class="number">0</span>));
+        <span class="macro">assert_relative_eq!</span>(<span class="number">0.5</span>,  surface.texel(Channel::G, x, y, <span class="number">0</span>));
+        <span class="macro">assert_relative_eq!</span>(<span class="number">0.75</span>, surface.texel(Channel::B, x, y, <span class="number">0</span>));
+        <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::A, x, y, <span class="number">0</span>));
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.fill" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#1999-2006">source</a><h4 class="code-header">pub fn <a href="#method.fill" class="fn">fill</a>(&amp;mut self, rgba: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>])</h4></section></summary><div class="docblock"><p>Sets all texels in the surface to a solid color.</p>
+<h5 id="examples-11"><a href="#examples-11">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">32 </span>* <span class="number">32 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">32</span>, <span class="number">32</span>, <span class="number">1</span>).unwrap();
+
+<span class="kw">let </span>rgba = [<span class="number">0.0</span>, <span class="number">0.33</span>, <span class="number">0.66</span>, <span class="number">1.0</span>];
+surface.fill(rgba);
+
+<span class="macro">assert_eq!</span>(<span class="number">32</span>, surface.width());
+<span class="macro">assert_eq!</span>(<span class="number">32</span>, surface.height());
+
+<span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..<span class="number">32 </span>{
+    <span class="kw">for </span>y <span class="kw">in </span><span class="number">0</span>..<span class="number">32 </span>{
+        <span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>,  surface.texel(Channel::R, x, y, <span class="number">0</span>));
+        <span class="macro">assert_relative_eq!</span>(<span class="number">0.33</span>, surface.texel(Channel::G, x, y, <span class="number">0</span>));
+        <span class="macro">assert_relative_eq!</span>(<span class="number">0.66</span>, surface.texel(Channel::B, x, y, <span class="number">0</span>));
+        <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::A, x, y, <span class="number">0</span>));
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_border" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2042-2049">source</a><h4 class="code-header">pub fn <a href="#method.set_border" class="fn">set_border</a>(&amp;mut self, rgba: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>])</h4></section></summary><div class="docblock"><p>Sets all texels on the border of the surface to a solid color.</p>
+<h5 id="examples-12"><a href="#examples-12">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">4 </span>* <span class="number">4 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">4</span>, <span class="number">4</span>, <span class="number">1</span>).unwrap();
+
+<span class="kw">let </span>rgba = [<span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">1.0</span>];
+surface.set_border(rgba);
+
+<span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
+    <span class="kw">for </span>y <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
+        <span class="comment">// On the border
+        </span><span class="kw">if </span>x == <span class="number">0 </span>|| y == <span class="number">0 </span>|| x == <span class="number">3 </span>|| y == <span class="number">3 </span>{
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.25</span>, surface.texel(Channel::R, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.5</span>,  surface.texel(Channel::G, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.75</span>, surface.texel(Channel::B, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::A, x, y, <span class="number">0</span>));
+        }
+
+        <span class="comment">// Not on the border
+        </span><span class="kw">else </span>{
+            <span class="macro">assert_relative_eq!</span>(f32::from_bits(<span class="number">0</span>), surface.texel(Channel::R, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(f32::from_bits(<span class="number">0</span>), surface.texel(Channel::G, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(f32::from_bits(<span class="number">0</span>), surface.texel(Channel::B, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(f32::from_bits(<span class="number">0</span>), surface.texel(Channel::A, x, y, <span class="number">0</span>));
+        }
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_atlas_border" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2058-2080">source</a><h4 class="code-header">pub fn <a href="#method.set_atlas_border" class="fn">set_atlas_border</a>(&amp;mut self, w: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, h: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, rgba: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>])</h4></section></summary><div class="docblock"><p>Draws borders of a given color around each w x h tile contained within the surface,
+starting from the (0, 0) corner. In case the surface size is not divisible by the
+tile size, borders are not drawn for tiles crossing the surface boundary</p>
+<h5 id="panics-7"><a href="#panics-7">Panics</a></h5>
+<p>Panics if <code>w</code> or <code>h</code> are <code>0</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.resize_filtered" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2087-2108">source</a><h4 class="code-header">pub fn <a href="#method.resize_filtered" class="fn">resize_filtered</a>(&amp;mut self, w: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, h: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, d: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, filter: <a class="struct" href="struct.Filter.html" title="struct nvtt_rs::Filter">Filter</a>&lt;<a class="enum" href="enum.Resize.html" title="enum nvtt_rs::Resize">Resize</a>&gt;)</h4></section></summary><div class="docblock"><p>Resizes this surface to have size w x h x d using a given filter.</p>
+<h5 id="panics-8"><a href="#panics-8">Panics</a></h5>
+<p>Panics if <code>w</code>, <code>h</code>, or <code>d</code> are 0</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.resize_rounded" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2115-2135">source</a><h4 class="code-header">pub fn <a href="#method.resize_rounded" class="fn">resize_rounded</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;max_extent: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;mode: <a class="enum" href="enum.RoundMode.html" title="enum nvtt_rs::RoundMode">RoundMode</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;filter: <a class="struct" href="struct.Filter.html" title="struct nvtt_rs::Filter">Filter</a>&lt;<a class="enum" href="enum.Resize.html" title="enum nvtt_rs::Resize">Resize</a>&gt;<br>)</h4></section></summary><div class="docblock"><p>Resizes this surface so that its largest side has length <code>max_extent</code>, subject to a rounding mode and a filter.</p>
+<h5 id="panics-9"><a href="#panics-9">Panics</a></h5>
+<p>Panics if <code>max_extent</code> is <code>0</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.resize_make_square" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2143-2157">source</a><h4 class="code-header">pub fn <a href="#method.resize_make_square" class="fn">resize_make_square</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;max_extent: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;mode: <a class="enum" href="enum.RoundMode.html" title="enum nvtt_rs::RoundMode">RoundMode</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;filter: <a class="struct" href="struct.Filter.html" title="struct nvtt_rs::Filter">Filter</a>&lt;<a class="enum" href="enum.Resize.html" title="enum nvtt_rs::Resize">Resize</a>&gt;<br>)</h4></section></summary><div class="docblock"><p>Resizes this surface so that its largest side has length <code>max_extent</code> and the result is square or cubical.
+Uses a rounding mode and a filter.</p>
+<h5 id="panics-10"><a href="#panics-10">Panics</a></h5>
+<p>Panics if <code>max_extent</code> is <code>0</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.canvas_resize" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2198-2212">source</a><h4 class="code-header">pub fn <a href="#method.canvas_resize" class="fn">canvas_resize</a>(&amp;mut self, w: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, h: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, d: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>)</h4></section></summary><div class="docblock"><p>Crops or expands this surface from the <code>(0, 0, 0)</code> corner, with any new values cleared to 0.</p>
+<h5 id="panics-11"><a href="#panics-11">Panics</a></h5>
+<p>Panics if any of <code>w</code>, <code>h</code>, or <code>d</code> are <code>0</code>.</p>
+<h5 id="examples-13"><a href="#examples-13">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>bytes = [<span class="number">0u8</span>; (<span class="number">4 </span>* <span class="number">4 </span>* std::mem::size_of::&lt;f32&gt;())];
+<span class="kw">let </span>input = InputFormat::R32f(<span class="kw-2">&amp;</span>bytes);
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">4</span>, <span class="number">4</span>, <span class="number">1</span>).unwrap();
+
+<span class="kw">let </span>rgba = [<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>];
+surface.fill(rgba);
+surface.canvas_resize(<span class="number">8</span>, <span class="number">8</span>, <span class="number">1</span>);
+
+<span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..<span class="number">8 </span>{
+    <span class="kw">for </span>y <span class="kw">in </span><span class="number">0</span>..<span class="number">8 </span>{
+        <span class="comment">// Old region
+        </span><span class="kw">if </span>x &lt; <span class="number">4 </span>&amp;&amp; y &lt; <span class="number">4 </span>{
+            <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.texel(Channel::R, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.texel(Channel::G, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.texel(Channel::B, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>, surface.texel(Channel::A, x, y, <span class="number">0</span>));
+        }
+
+        <span class="comment">// New region
+        </span><span class="kw">else </span>{
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.texel(Channel::R, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.texel(Channel::G, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.texel(Channel::B, x, y, <span class="number">0</span>));
+            <span class="macro">assert_relative_eq!</span>(<span class="number">0.0</span>, surface.texel(Channel::A, x, y, <span class="number">0</span>));
+        }
+    }
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.premultiply_alpha" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2236-2240">source</a><h4 class="code-header">pub fn <a href="#method.premultiply_alpha" class="fn">premultiply_alpha</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Converts to premultiplied alpha, replacing <code>(r, g, b, a)</code> with <code>(ar, ag, ab, a)</code>.</p>
+<h5 id="examples-14"><a href="#examples-14">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = InputFormat::Bgra8Ub {
+    data: <span class="kw-2">&amp;</span>[<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">0</span>],
+    unsigned_to_signed: <span class="bool-val">true</span>,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::R, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::G, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::B, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::A, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+
+surface.premultiply_alpha();
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::R, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::G, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::B, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::A, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.demultiply_alpha" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2276-2285">source</a><h4 class="code-header">pub fn <a href="#method.demultiply_alpha" class="fn">demultiply_alpha</a>(&amp;mut self, epsilon: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;)</h4></section></summary><div class="docblock"><p>Converts from premultiplied to unpremultiplied alpha, with special handling around zero alpha values.</p>
+<p>When <code>abs(a) &gt;= epsilon</code>, the result is the same as dividing the RGB channels by the alpha channel.
+Otherwise, this function divides the RGB channels by <code>epsilon * sign(a)</code>, since the result of
+unpremultiplying a fully transparent color is undefined.</p>
+<h5 id="optional-parameters"><a href="#optional-parameters">Optional Parameters</a></h5>
+<ul>
+<li><code>epsilon</code>: Defaults to <code>1e-12</code></li>
+</ul>
+<h5 id="panics-12"><a href="#panics-12">Panics</a></h5>
+<p>Panics if <code>epsilon</code> is <code>0</code>.</p>
+<h5 id="examples-15"><a href="#examples-15">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = InputFormat::Bgra8Ub {
+    data: <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],
+    unsigned_to_signed: <span class="bool-val">true</span>,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::R, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::G, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::B, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::A, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+
+surface.demultiply_alpha(<span class="prelude-val">None</span>);
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::R, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::G, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(<span class="number">1.0</span>,  surface.texel(Channel::B, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+<span class="macro">assert_relative_eq!</span>(-<span class="number">1.0</span>, surface.texel(Channel::A, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_grey_scale" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2318-2334">source</a><h4 class="code-header">pub fn <a href="#method.to_grey_scale" class="fn">to_grey_scale</a>(&amp;mut self, rgba_scale: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>])</h4></section></summary><div class="docblock"><p>Sets channels to the result of converting to grayscale, with customizable channel weights.</p>
+<p>For instance, this can be used to give green a higher weight than red or blue when computing luminance.
+This function will normalize the different scales so they sum to 1, so e.g. (2, 4, 1, 0) are valid
+scales. The greyscale value is then computed using</p>
+<p><code>grey = r * rgba_scale[0] + g * rgba_scale[1] + b * rgba_scale[2] + a * rgba_scale[3]</code></p>
+<p>and then all channels (including alpha) are set to grey.</p>
+<h5 id="examples-16"><a href="#examples-16">Examples</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>input = InputFormat::Bgra8Ub {
+    data: <span class="kw-2">&amp;</span>[<span class="number">53</span>, <span class="number">234</span>, <span class="number">26</span>, <span class="number">158</span>],
+    unsigned_to_signed: <span class="bool-val">false</span>,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>surface = Surface::image(input, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>).unwrap();
+surface.to_grey_scale([<span class="number">2.0</span>, <span class="number">4.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>]);
+
+<span class="kw">let </span>r = surface.texel(Channel::R, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+<span class="kw">let </span>g = surface.texel(Channel::G, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+<span class="kw">let </span>b = surface.texel(Channel::B, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+<span class="kw">let </span>a = surface.texel(Channel::A, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+
+<span class="macro">assert_relative_eq!</span>(r, g);
+<span class="macro">assert_relative_eq!</span>(g, b);
+<span class="macro">assert_relative_eq!</span>(b, a);</code></pre></div>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_gamma" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2337-2339">source</a><h4 class="code-header">pub fn <a href="#method.from_gamma" class="fn">from_gamma</a>(&amp;mut self, gamma: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Raises RGB channels to the power <code>gamma</code>. <code>gamma=2.2</code> approximates sRGB-to-linear conversion.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.channel_from_gamma" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2342-2348">source</a><h4 class="code-header">pub fn <a href="#method.channel_from_gamma" class="fn">channel_from_gamma</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, gamma: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Raises the given channel to the power <code>gamma</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_gamma" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2351-2353">source</a><h4 class="code-header">pub fn <a href="#method.to_gamma" class="fn">to_gamma</a>(&amp;mut self, gamma: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Raises RGB channels to the power <code>1/gamma</code>. <code>gamma=2.2</code> approximates sRGB-to-linear conversion.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.channel_to_gamma" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2356-2360">source</a><h4 class="code-header">pub fn <a href="#method.channel_to_gamma" class="fn">channel_to_gamma</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, gamma: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Raises the given channel to the power <code>1/gamma</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_srgb" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2372-2376">source</a><h4 class="code-header">pub fn <a href="#method.to_srgb" class="fn">to_srgb</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Applies the linear-to-sRGB transfer function to RGB channels.</p>
+<p>This transfer function replaces each value x with</p>
+<div class="example-wrap"><pre class="language-text"><code>if x is NaN or x &lt;= 0.0f, 0.0f
+if x &lt;= 0.0031308f, 12.92f * x
+if x &lt;= 1.0f, powf(x, 0.41666f) * 1.055f - 0.055f
+otherwise, 1.0f
+</code></pre></div></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_srgb" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2388-2392">source</a><h4 class="code-header">pub fn <a href="#method.from_srgb" class="fn">from_srgb</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Applies the sRGB-to-linear transfer function to RGB channels.</p>
+<p>This transfer function replaces each value x with</p>
+<div class="example-wrap"><pre class="language-text"><code>if x &lt; 0.0f, 0.0f
+if x &lt; 0.04045f, x / 12.92f
+if x &lt; 1.0f, powf((x + 0.055f)/1.055f, 2.4f)
+otherwise, 1.0f
+</code></pre></div></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_xenon_srgb" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2406-2410">source</a><h4 class="code-header">pub fn <a href="#method.to_xenon_srgb" class="fn">to_xenon_srgb</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Converts RGB channels from linear to a piecewise linear sRGB approximation.</p>
+<p>This transfer function replaces each value x with</p>
+<div class="example-wrap"><pre class="language-text"><code>if x &lt; 0, 0.0f
+if x &lt; 1/16, 4.0f * x
+if x &lt; 1/8, 0.25f + 2.0f * (x - 0.0625f)
+if x &lt; 1/2, 0.375f + (x - 0.125f)
+if x &lt; 1, 0.75f + 0.5f * (x - 0.5f)
+otherwise, 1.0f
+</code></pre></div></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_rgbm" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2419-2426">source</a><h4 class="code-header">pub fn <a href="#method.to_rgbm" class="fn">to_rgbm</a>(&amp;mut self, range: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;, threshold: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;)</h4></section></summary><div class="docblock"><p>Produces an LDR Red, Green, Blue, Magnitude encoding of the HDR RGB channels. See
+<a href="struct.Surface.html#method.from_rgbm" title="Surface::from_rgbm()"><code>Surface::from_rgbm()</code></a> for the storage method. This uses an iterative compression
+approach to reduce the error with regard to decoding.</p>
+<h5 id="optional-parameters-1"><a href="#optional-parameters-1">Optional Parameters</a></h5>
+<ul>
+<li><code>range</code>: Defaults to <code>1.0</code></li>
+<li><code>threshold</code>: Defaults to <code>0.25</code></li>
+</ul>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_rgbm" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2437-2444">source</a><h4 class="code-header">pub fn <a href="#method.from_rgbm" class="fn">from_rgbm</a>(&amp;mut self, range: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;, threshold: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;)</h4></section></summary><div class="docblock"><p>Produces HDR <code>(r, g, b, 1)</code> values from an LDR <code>(red, green, blue, magnitude)</code> storage method.</p>
+<p>HDR values are reconstructed as follows: First, the magnitude <code>M</code> is reconstructed from the
+alpha channel using <code>M = a * (range - threshold) + threshold</code>. Then the red, green, and blue
+channels are multiplied by <code>M</code>.</p>
+<h5 id="optional-parameters-2"><a href="#optional-parameters-2">Optional Parameters</a></h5>
+<ul>
+<li><code>range</code>: Defaults to <code>1.0</code></li>
+<li><code>threshold</code>: Defaults to <code>0.25</code></li>
+</ul>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.tonemap" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2447-2454">source</a><h4 class="code-header">pub fn <a href="#method.tonemap" class="fn">tonemap</a>(&amp;mut self, tm: <a class="enum" href="enum.ToneMapper.html" title="enum nvtt_rs::ToneMapper">ToneMapper</a>)</h4></section></summary><div class="docblock"><p>Applies an HDR-to-LDR tone mapper.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_rgbe" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2472-2481">source</a><h4 class="code-header">pub unsafe fn <a href="#method.to_rgbe" class="fn">to_rgbe</a>(&amp;mut self, mantissa_bits: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, exponent_bits: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>)</h4></section></summary><div class="docblock"><p>Produces a shared-exponent Red, Green, Blue, Exponent encoding of the HDR RGB channels,
+such as <code>R9G9B9E5</code>.</p>
+<p>See <a href="struct.Surface.html#method.from_rgbe" title="Surface::from_rgbe()"><code>Surface::from_rgbe()</code></a> for the storage method. This uses an iterative compression approach to
+reduce the error with regard to decoding.</p>
+<h5 id="safety-1"><a href="#safety-1">Safety</a></h5>
+<p>The Nvidia SDK does not declare what a safe value for <code>mantissa_bits</code>/<code>exponent_bits</code> may be.
+If they are too large or small, it will cause undefined behaviour. Assuming the operation has not changed
+much since the original <a href="https://github.com/castano/nvidia-texture-tools/blob/master/src/nvtt/Surface.cpp">open sourced implementation</a>,
+then <code>mantissa_bits</code>/<code>exponent_bits</code> cannot be larger than 32, as they will both be casted to a <code>c_int</code>
+and then perform the bitshifts <code>1 &lt;&lt; mantissa_bits</code> and <code>1 &lt;&lt; exponent_bits</code>. No current version lower/upper bounds are formally stated.</p>
+<p>Only the values <code>mantissa_bits = 9</code> and <code>exponent_bits = 5</code> are mentioned, however a far
+broader range of values is likely safe.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_rgbe" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2501-2510">source</a><h4 class="code-header">pub unsafe fn <a href="#method.from_rgbe" class="fn">from_rgbe</a>(&amp;mut self, mantissa_bits: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, exponent_bits: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>)</h4></section></summary><div class="docblock"><p>Produces HDR <code>(r, g, b, 1)</code> values from an LDR <code>(red, green, blue, exponent)</code> storage method.</p>
+<p>HDR values are reconstructed as follows: R, G, B, and E are first converted from <code>UNORM</code> floats
+to integers by multiplying RGB by <code>(1 &lt;&lt; mantissaBits) - 1</code> and E by <code>(1 &lt;&lt; exponentBits) - 1</code>.
+E stores a scaling factor as a power of 2, which is reconstructed using
+<code>scale = 2^(E - ((1 &lt;&lt; (exponentBits - 1)) - 1) - mantissaBits)</code>.
+R, G, and B are then multiplied by <code>scale</code>.</p>
+<h5 id="safety-2"><a href="#safety-2">Safety</a></h5>
+<p>The Nvidia SDK does not declare what a safe value for <code>mantissa_bits</code>/<code>exponent_bits</code> may be.
+If they are too large or small, it will cause undefined behaviour. Assuming the operation has not changed
+much since the original <a href="https://github.com/castano/nvidia-texture-tools/blob/master/src/nvtt/Surface.cpp">open sourced implementation</a>,
+then <code>mantissa_bits</code>/<code>exponent_bits</code> cannot be larger than 32, as they will both be casted to a <code>c_int</code>
+and then perform the bitshifts <code>1 &lt;&lt; mantissa_bits</code> and <code>1 &lt;&lt; exponent_bits</code>. No current version lower/upper bounds are formally stated.</p>
+<p>Only the values <code>mantissa_bits = 9</code> and <code>exponent_bits = 5</code> are mentioned, however a far
+broader range of values is likely safe.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_ycocg" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2525-2529">source</a><h4 class="code-header">pub fn <a href="#method.to_ycocg" class="fn">to_ycocg</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Converts from <code>(r, g, b, -)</code> colors to <code>(Co, Cg, 1, Y)</code> colors.</p>
+<p>This is useful for formats that use chroma subsampling.</p>
+<p>Y is in the range <code>[0, 1]</code>, while Co and Cg are in the range <code>[-1, 1]</code>.</p>
+<p>The RGB-to-YCoCg formula used is</p>
+<div class="example-wrap"><pre class="language-text"><code>Y  = (2g + r + b)/4
+Co = r - b
+Cg = (2g - r - b)/2
+</code></pre></div></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.block_scale_cocg" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2556-2569">source</a><h4 class="code-header">pub unsafe fn <a href="#method.block_scale_cocg" class="fn">block_scale_cocg</a>(&amp;mut self, bits: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>&gt;)</h4></section></summary><div class="docblock"><p>Stores per-block YCoCg scaling information for potentially better 4-channel compression of YCoCg data.</p>
+<p>For each 4x4 block, this computes the maximum absolute Co and Cg values, stores the result in the blue
+channel, and multiplies the Co and Cg channels (0 and 1) by its reciprocal. The original Co and Cg values
+can then be reconstructed by multiplying by the blue channel.</p>
+<p>The scaling information is quantized to the given number of bits.</p>
+<h5 id="note"><a href="#note">Note</a></h5>
+<p>This assumes that your texture compression format uses 4x4 blocks. This is true for all BC1-BC7 formats,
+but ASTC can use other block sizes.</p>
+<h5 id="optional-parameters-3"><a href="#optional-parameters-3">Optional Parameters</a></h5>
+<ul>
+<li><code>bits</code>: Defaults to <code>5</code></li>
+</ul>
+<h5 id="safety-3"><a href="#safety-3">Safety</a></h5>
+<p>The Nvidia SDK does not declare what a safe value for <code>bits</code> may be. If it is too large or
+small, it will cause undefined behaviour. Assuming the operation has not changed much since the
+original <a href="https://github.com/castano/nvidia-texture-tools/blob/master/src/nvtt/Surface.cpp">open sourced implementation</a>,
+then <code>bits</code> cannot be larger than 32, as it is casted to a <code>c_int</code> and then performs the bitshift
+<code>1 &lt;&lt; bits</code>. No current version lower/upper bounds are formally stated.</p>
+<p>Only the value <code>bits = 5</code>is mentioned, however a far broader range of values is likely safe.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_ycocg" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2585-2589">source</a><h4 class="code-header">pub fn <a href="#method.from_ycocg" class="fn">from_ycocg</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Converts from <code>(Co, Cg, scale, Y)</code> colors to <code>(r, g, b, 1)</code> colors.</p>
+<p>This is useful for formats that use chroma subsampling.
+Y is in the range <code>[0, 1]</code>, while Co and Cg are in the range <code>[-1, 1]</code>. Co and Cg are
+multiplied by channel 2 (<code>scale</code>) to reverse the effects of optionally calling
+<a href="struct.Surface.html#method.block_scale_cocg" title="Surface::block_scale_cocg()"><code>Surface::block_scale_cocg()</code></a>.</p>
+<p>The YCoCg-to-RGB formula used is</p>
+<div class="example-wrap"><pre class="language-text"><code>r = Y + Co - Cg
+g = Y + Cg
+b = Y - Co - Cg
+</code></pre></div></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_lm" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2600-2607">source</a><h4 class="code-header">pub fn <a href="#method.to_lm" class="fn">to_lm</a>(&amp;mut self, range: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;, threshold: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;)</h4></section></summary><div class="docblock"><p>Stores luminance-only values in a two-channel way. Maybe consider BC4 compression instead.</p>
+<p>Luminance <code>L</code> is computed by averaging the red, green, and blue values, while <code>M</code> stores
+the max of these values and <code>threshold</code>. The red, green, and blue channels then store <code>L/M</code>,
+and the alpha channel stores <code>(M - threshold)/(1 - threshold)</code>.</p>
+<h5 id="optional-parameters-4"><a href="#optional-parameters-4">Optional Parameters</a></h5>
+<ul>
+<li><code>range</code>: Defaults to <code>1.0</code></li>
+<li><code>threshold</code>: Defaults to <code>0.0</code></li>
+</ul>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_luvw" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2619-2625">source</a><h4 class="code-header">pub fn <a href="#method.to_luvw" class="fn">to_luvw</a>(&amp;mut self, range: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;)</h4></section></summary><div class="docblock"><p>Converts from RGB colors to a (U, V, W, L) color space, much like RGBM.</p>
+<p>All values are clamped to <code>[0, 1]</code>. Then a luminance-like value <code>L</code> is computed from RGB using</p>
+<p><code>L = max(sqrtf(R^2 + G^2 + B^2), 1e-6f)</code>.</p>
+<p>This then stores the value <code>(R/L, G/L, B/L, L/sqrt(3))</code>.</p>
+<h5 id="optional-paramters"><a href="#optional-paramters">Optional Paramters</a></h5>
+<ul>
+<li><code>range</code>: Defaults to <code>1.0</code></li>
+</ul>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_luvw" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2633-2639">source</a><h4 class="code-header">pub fn <a href="#method.from_luvw" class="fn">from_luvw</a>(&amp;mut self, range: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;)</h4></section></summary><div class="docblock"><p>Converts from <a href="struct.Surface.html#method.to_luvw" title="Surface::to_luvw()"><code>Surface::to_luvw()</code></a>’s color space to RGB colors.</p>
+<p>This is the same as <a href="struct.Surface.html#method.from_rgbm" title="Surface::from_rgbm()"><code>Surface::from_rgbm()</code></a> with <code>threshold = range * sqrt(3))</code>.</p>
+<h5 id="optional-paramters-1"><a href="#optional-paramters-1">Optional Paramters</a></h5>
+<ul>
+<li><code>range</code>: Defaults to <code>1.0</code></li>
+</ul>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_log_scale" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2642-2648">source</a><h4 class="code-header">pub fn <a href="#method.to_log_scale" class="fn">to_log_scale</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, base: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Replaces all values with their log with the given base.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from_log_scale" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2651-2657">source</a><h4 class="code-header">pub fn <a href="#method.from_log_scale" class="fn">from_log_scale</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, base: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Inverts <a href="struct.Surface.html#method.to_log_scale" title="Surface::to_log_scale()"><code>Surface::to_log_scale()</code></a> by replacing all values <code>x</code> with <code>base^x</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.alpha_test_coverage" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2665-2669">source</a><h4 class="code-header">pub fn <a href="#method.alpha_test_coverage" class="fn">alpha_test_coverage</a>(&amp;self, alpha_ref: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, alpha_channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></h4></section></summary><div class="docblock"><p>Returns the approximate fraction (0 to 1) of the image with an alpha value greater than <code>alpha_ref</code>.</p>
+<p>This function uses 8 x 8 subsampling together with linear interpolation.</p>
+<h5 id="notes-4"><a href="#notes-4">Notes</a></h5>
+<p><code>alpha_ref</code> is clamped to the range <code>[1/256, 255/256]</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.scale_alpha_to_coverage" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2675-2692">source</a><h4 class="code-header">pub fn <a href="#method.scale_alpha_to_coverage" class="fn">scale_alpha_to_coverage</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;coverage: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;alpha_ref: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;alpha_channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a><br>)</h4></section></summary><div class="docblock"><p>Attempts to scale the alpha channel so that a fraction <code>coverage</code> (between 0 and 1) of
+the surface has an alpha greater than <code>alpha_ref</code>.</p>
+<p>See also <a href="struct.Surface.html#method.alpha_test_coverage" title="Surface::alpha_test_coverage()"><code>Surface::alpha_test_coverage()</code></a> for the method used to determine what fraction passes the alpha test.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.average" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2710-2721">source</a><h4 class="code-header">pub fn <a href="#method.average" class="fn">average</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;alpha_channel: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;gamma: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;<br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></h4></section></summary><div class="docblock"><p>Computes the average of a channel, possibly with alpha or with a gamma transfer function.</p>
+<p>If <code>alpha_channel</code> is <code>None</code>, this function computes</p>
+<p><code>(sum(c[i]^gamma, i=0...numPixels)/numPixels)^(1/gamma)</code></p>
+<p>where <code>c</code> is the channel’s data.</p>
+<p>Otherwise, this computes</p>
+<p><code>(sum((c[i]^gamma) * a[i], i=0...numPixels)/sum(a[i], i=0...numPixels))^(1/gamma)</code></p>
+<p>where <code>a</code> is the alpha channel’s data.</p>
+<h5 id="optional-parameters-5"><a href="#optional-parameters-5">Optional Parameters</a></h5>
+<ul>
+<li><code>gamma</code>: Defaults to <code>2.2</code></li>
+</ul>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.histogram" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2734-2754">source</a><h4 class="code-header">pub fn <a href="#method.histogram" class="fn">histogram</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;range_min: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;range_max: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;bins: &amp;mut [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a>]<br>)</h4></section></summary><div class="docblock"><p>Stores a histogram of channel values between <code>range_min</code> and <code>range_max</code> into <code>bins</code>.</p>
+<p>This function does not clear <code>bins</code>’ values, in case we want to accumulate multiple histograms.</p>
+<p>Each texel’s value is linearly mapped to a bin, using floor rounding. Values below <code>range_min</code>
+are clamped to the first bin, values above <code>range_max</code> are clamped to the last bin. Then the bin’s
+value is incremented.</p>
+<h5 id="panics-13"><a href="#panics-13">Panics</a></h5>
+<p>Panics if <code>bins.len() == 0</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.range" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2764-2792">source</a><h4 class="code-header">pub fn <a href="#method.range" class="fn">range</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;alpha_channel: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;alpha_ref: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a><br>) -&gt; (<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Returns the minimum and maximum value in this channel, possibly using alpha testing.</p>
+<p>If <code>alpha_channel</code> is <code>None</code>, this returns the minimum and maximum value in this channel.</p>
+<p>Otherwise, this only includes texels for which the alpha value is greater than <code>alpha_ref</code>.</p>
+<p>If an alpha channel is selected and all texels fail the alpha test, this sets this will return
+<a href="https://doc.rust-lang.org/nightly/std/primitive.f32.html#associatedconstant.MAX" title="f32::MAX"><code>f32::MAX</code></a> and to <a href="https://doc.rust-lang.org/nightly/std/primitive.f32.html#associatedconstant.MIN" title="f32::MIN"><code>f32::MIN</code></a>, i.e. for a return value <code>ret</code> one will have <code>ret.0 &gt; ret.1</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.transform" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2806-2825">source</a><h4 class="code-header">pub fn <a href="#method.transform" class="fn">transform</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;w0: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>],<br>&nbsp;&nbsp;&nbsp;&nbsp;w1: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>],<br>&nbsp;&nbsp;&nbsp;&nbsp;w2: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>],<br>&nbsp;&nbsp;&nbsp;&nbsp;w3: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>],<br>&nbsp;&nbsp;&nbsp;&nbsp;offset: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>]<br>)</h4></section></summary><div class="docblock"><p>Applies a 4x4 affine transformation to the RGBA values.</p>
+<p><code>w0...w3</code> are the columns of the matrix. <code>offset</code> is added after the matrix-vector multiplication.</p>
+<p>In other words, all <code>(r, g, b, a)</code> values are replaced with</p>
+<div class="example-wrap"><pre class="language-text"><code> (r)   (w0[0], w1[0], w2[0], w3[0]) (r)   (offset[0])
+ (g) = (w0[1], w1[1], w2[1], w3[1]) (g) + (offset[1])
+ (b)   (w0[2], w1[2], w2[2], w3[2]) (b)   (offset[2])
+ (a)   (w0[3], w1[3], w2[3], w3[3]) (a)   (offset[3])
+</code></pre></div></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.swizzle" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2836-2847">source</a><h4 class="code-header">pub fn <a href="#method.swizzle" class="fn">swizzle</a>(&amp;mut self, r: <a class="enum" href="enum.Swizzle.html" title="enum nvtt_rs::Swizzle">Swizzle</a>, g: <a class="enum" href="enum.Swizzle.html" title="enum nvtt_rs::Swizzle">Swizzle</a>, b: <a class="enum" href="enum.Swizzle.html" title="enum nvtt_rs::Swizzle">Swizzle</a>, a: <a class="enum" href="enum.Swizzle.html" title="enum nvtt_rs::Swizzle">Swizzle</a>)</h4></section></summary><div class="docblock"><p>Swizzles the channels of the surface.</p>
+<p>Each argument specifies where the corresponding channel should come from.
+For instance, setting <code>r</code> to <a href="enum.Swizzle.html#variant.B" title="Swizzle::B"><code>Swizzle::B</code></a> would mean that the red channel
+would be set to the current blue channel.</p>
+<p>In addition, the special values <a href="enum.Swizzle.html#variant.One" title="Swizzle::One"><code>Swizzle::One</code></a>, <a href="enum.Swizzle.html#variant.Zero" title="Swizzle::Zero"><code>Swizzle::Zero</code></a>, and
+<a href="enum.Swizzle.html#variant.NegOne" title="Swizzle::NegOne"><code>Swizzle::NegOne</code></a> represent setting the channel to a constant value of
+<code>1.0</code>, <code>0.0</code>, or <code>-1.0</code>, respectively.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.scale_bias" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2850-2856">source</a><h4 class="code-header">pub fn <a href="#method.scale_bias" class="fn">scale_bias</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, scale: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, bias: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Applies a <code>scale</code> and <code>bias</code> to the given channel. Each value <code>x</code> is replaced by <code>x * scale + bias</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.abs" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2859-2865">source</a><h4 class="code-header">pub fn <a href="#method.abs" class="fn">abs</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>)</h4></section></summary><div class="docblock"><p>Replaces all colors by their absolute value.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.clamp" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2868-2874">source</a><h4 class="code-header">pub fn <a href="#method.clamp" class="fn">clamp</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, low: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, high: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Clamps all values in the channel to the range <code>[low, high]</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.blend" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2881-2889">source</a><h4 class="code-header">pub fn <a href="#method.blend" class="fn">blend</a>(&amp;mut self, rgba: [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">4</a>], t: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Interpolates all texels between their current color and a constant color <code>(r, g, b, a)</code>.</p>
+<p><code>t</code> is the value used for linearly interpolating between the surface’s current colors
+and the constant color. For instance, a value of <code>t=0</code> has no effect to the surface’s
+colors, and a value of <code>t=1</code> replaces the surface’s colors entirely with <code>(r, g, b, a)</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.convolve_slice" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2899-2920">source</a><h4 class="code-header">pub fn <a href="#method.convolve_slice" class="fn">convolve_slice</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, dim: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>, kernel: &amp;mut [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>])</h4></section></summary><div class="docblock"><p>Convolves a channel with a kernel.</p>
+<p>This uses a 2D <code>dim x dim</code> kernel, with values in <code>kernel</code> specified in row-major order.
+The behavior around image borders is determined by <a href="struct.Surface.html#method.wrap_mode" title="Surface::wrap_mode()"><code>Surface::wrap_mode()</code></a>.</p>
+<h5 id="panics-14"><a href="#panics-14">Panics</a></h5>
+<p>Panics if <code>dim * dim &gt; kernel.len()</code></p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.convolve" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2925-2942">source</a><h4 class="code-header">pub fn <a href="#method.convolve" class="fn">convolve</a>&lt;const N:&nbsp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;kernel: [[<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">N</a>]; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">N</a>]<br>)</h4></section></summary><div class="docblock"><p>Similar to <a href="struct.Surface.html#method.convolve_slice" title="Surface::convolve_slice()"><code>Surface::convolve_slice()</code></a>, this convolves a channel with a kernel.</p>
+<p>Values should be specified in row-major order.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.binarize" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2952-2967">source</a><h4 class="code-header">pub fn <a href="#method.binarize" class="fn">binarize</a>(&amp;mut self, channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>, threshold: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, dither: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>)</h4></section></summary><div class="docblock"><p>Sets values in the given channel to either 1 or 0 depending on if they’re greater
+than the <code>threshold</code>, with optional <code>dithering</code>.</p>
+<p>If dither is true, this uses Floyd-Steinberg dithering on the CPU. Not supported for 3D surfaces.</p>
+<h5 id="panics-15"><a href="#panics-15">Panics</a></h5>
+<p>Panics if <code>dither</code> is true and <code>depth &gt; 1</code></p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.quantize" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#2991-3014">source</a><h4 class="code-header">pub unsafe fn <a href="#method.quantize" class="fn">quantize</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;channel: <a class="enum" href="enum.Channel.html" title="enum nvtt_rs::Channel">Channel</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;bits: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;exact_endpoints: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;dither: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a><br>)</h4></section></summary><div class="docblock"><p>Quantizes this channel to a particular number of <code>bits</code>, with optional <code>dithering</code>.
+Assumes input is in the <code>[0, 1]</code> range. Output  is in the <code>[0, 1]</code> range, but rounded to the
+middle of each bin.</p>
+<h5 id="parameters"><a href="#parameters">Parameters</a></h5>
+<ul>
+<li><code>channel</code>: The index of the channel to quantize.</li>
+<li><code>bits</code>: The number of bits to quantize to, yielding <code>2^bits</code> possible values.</li>
+<li><code>exact_endpoints</code>: If true, the set of quantized values will be <code>0, 1/(2^bits-1), ..., 1</code>,
+rather than <code>0, 1/(2^bits), ..., (2^bits-1)/(2^bits)</code>.</li>
+<li><code>dither</code>: If true, uses Floyd-Steinberg dithering on the CPU. Not supported for 3D surfaces.</li>
+</ul>
+<h5 id="panics-16"><a href="#panics-16">Panics</a></h5>
+<p>Panics if <code>dither</code> is true and <code>depth &gt; 1</code></p>
+<h5 id="safety-4"><a href="#safety-4">Safety</a></h5>
+<p>The Nvidia SDK does not declare what a safe value for <code>bits</code> may be. If it is too large or
+small, it will cause undefined behaviour. Assuming the operation has not changed much since the
+original <a href="https://github.com/castano/nvidia-texture-tools/blob/master/src/nvtt/Surface.cpp">open sourced implementation</a>,
+then <code>bits</code> cannot be larger than 32, as it is casted to a <code>c_int</code> and then performs the bitshift
+<code>1 &lt;&lt; bits</code>. No current version lower/upper bounds are formally stated.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_normal_map" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3028-3032">source</a><h4 class="code-header">pub fn <a href="#method.to_normal_map" class="fn">to_normal_map</a>(&amp;mut self, sm: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, medium: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, big: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>, large: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>)</h4></section></summary><div class="docblock"><p>Sets the RGB channels to a normal map generated by interpreting the alpha channel as a heightmap,
+using a blend of four small-scale to large-scale Sobel kernels.</p>
+<p>This uses a 9x9 kernel which is a weighted sum of a 3x3 (small), 5x5 (medium), 7x7 (big), and 9x9
+(large) differentiation kernels. Each of the weights can be greater than 1, or even negative.
+However, the kernel will be normalized so that its elements sum to 1, so scaling should be done on
+the alpha channel beforehand. The smallest kernel focuses on the highest-frequency details, and
+larger kernels attenuate higher frequencies.</p>
+<p>The source alpha channel, which is used as a height map to differentiate, is copied to the output.</p>
+<p>The output RGB channels will be in the ranges <code>[-1, 1]</code>, <code>[-1, 1]</code>, and <code>[0, 1]</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.transform_normals" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3035-3039">source</a><h4 class="code-header">pub fn <a href="#method.transform_normals" class="fn">transform_normals</a>(&amp;mut self, transform: <a class="enum" href="enum.NormalTransform.html" title="enum nvtt_rs::NormalTransform">NormalTransform</a>)</h4></section></summary><div class="docblock"><p>Applies a 3D-&gt;2D normal transformation, setting the <code>z</code> (blue) channel to <code>0</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.reconstruct_normals" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3042-3046">source</a><h4 class="code-header">pub fn <a href="#method.reconstruct_normals" class="fn">reconstruct_normals</a>(&amp;mut self, transform: <a class="enum" href="enum.NormalTransform.html" title="enum nvtt_rs::NormalTransform">NormalTransform</a>)</h4></section></summary><div class="docblock"><p>Reconstructs 3D normals from 2D transformed normals.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_clean_normal_map" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3057-3061">source</a><h4 class="code-header">pub fn <a href="#method.to_clean_normal_map" class="fn">to_clean_normal_map</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Sets the <code>z</code> (blue) channel to <code>x^2 + y^2</code>.</p>
+<p>If the x and y channels represent slopes, instead of normals, then this represents a
+CLEAN map. The important thing about this is that it can be mipmapped, and the difference
+between the sum of the square of the first and second mipmapped channels and the third
+mipmapped channel can be used to determine how rough the normal map is in a given area.</p>
+<p>This is a lower-memory and lower-bandwidth version of LEAN mapping, but it has the
+drawback that it can only represent isotropic roughness.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.pack_normals" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3066-3073">source</a><h4 class="code-header">pub fn <a href="#method.pack_normals" class="fn">pack_normals</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Packs signed normals in <code>[-1, 1]</code> to an unsigned range <code>[0, 1]</code>, using</p>
+<p><code>(r, g, b, a) |-&gt; (r/2+1/2, g/2+1/2, b/2+1/2, a)</code>.</p>
+</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.unpack_normals" class="method has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3078-3085">source</a><h4 class="code-header">pub fn <a href="#method.unpack_normals" class="fn">unpack_normals</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Expands packed normals in <code>[0, 1]</code> to signed normals in <code>[-1, 1]</code>, using</p>
+<p><code>(r, g, b, a) |-&gt; (2r-1, 2g-1, 2b-1, a)</code>.</p>
+</div></details></div></details></div><h2 id="trait-implementations" class="small-section-header">Trait Implementations<a href="#trait-implementations" class="anchor">§</a></h2><div id="trait-implementations-list"><details class="rustdoc-toggle implementors-toggle" open><summary><section id="impl-Clone-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3096-3107">source</a><a href="#impl-Clone-for-Surface" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.clone" class="method trait-impl has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3097-3106">source</a><a href="#method.clone" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone" class="fn">clone</a>(&amp;self) -&gt; Self</h4></section></summary><div class='docblock'>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.clone_from" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/clone.rs.html#132-134">source</a></span><a href="#method.clone_from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from" class="fn">clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</h4></section></summary><div class='docblock'>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></div></details></div></details><details class="rustdoc-toggle implementors-toggle" open><summary><section id="impl-Drop-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3088-3094">source</a><a href="#impl-Drop-for-Surface" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html" title="trait core::ops::drop::Drop">Drop</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.drop" class="method trait-impl has-srclink"><a class="srclink rightside" href="../src/nvtt_rs/lib.rs.html#3089-3093">source</a><a href="#method.drop" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html#tymethod.drop" class="fn">drop</a>(&amp;mut self)</h4></section></summary><div class='docblock'>Executes the destructor for this type. <a href="https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html#tymethod.drop">Read more</a></div></details></div></details></div><h2 id="synthetic-implementations" class="small-section-header">Auto Trait Implementations<a href="#synthetic-implementations" class="anchor">§</a></h2><div id="synthetic-implementations-list"><section id="impl-RefUnwindSafe-for-Surface" class="impl has-srclink"><a href="#impl-RefUnwindSafe-for-Surface" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html" title="trait core::panic::unwind_safe::RefUnwindSafe">RefUnwindSafe</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section><section id="impl-Send-for-Surface" class="impl has-srclink"><a href="#impl-Send-for-Surface" class="anchor">§</a><h3 class="code-header">impl !<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section><section id="impl-Sync-for-Surface" class="impl has-srclink"><a href="#impl-Sync-for-Surface" class="anchor">§</a><h3 class="code-header">impl !<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section><section id="impl-Unpin-for-Surface" class="impl has-srclink"><a href="#impl-Unpin-for-Surface" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section><section id="impl-UnwindSafe-for-Surface" class="impl has-srclink"><a href="#impl-UnwindSafe-for-Surface" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html" title="trait core::panic::unwind_safe::UnwindSafe">UnwindSafe</a> for <a class="struct" href="struct.Surface.html" title="struct nvtt_rs::Surface">Surface</a></h3></section></div><h2 id="blanket-implementations" class="small-section-header">Blanket Implementations<a href="#blanket-implementations" class="anchor">§</a></h2><div id="blanket-implementations-list"><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-Any-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#200">source</a><a href="#impl-Any-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a> for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: 'static + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.type_id" class="method trait-impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#201">source</a><a href="#method.type_id" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id" class="fn">type_id</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/any/struct.TypeId.html" title="struct core::any::TypeId">TypeId</a></h4></section></summary><div class='docblock'>Gets the <code>TypeId</code> of <code>self</code>. <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id">Read more</a></div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-Borrow%3CT%3E-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#211">source</a><a href="#impl-Borrow%3CT%3E-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;T&gt; for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.borrow" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/91522" title="Tracking issue for const_borrow">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#213">source</a></span><a href="#method.borrow" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow" class="fn">borrow</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>T</h4></section></summary><div class='docblock'>Immutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow">Read more</a></div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-BorrowMut%3CT%3E-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#220">source</a><a href="#impl-BorrowMut%3CT%3E-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html" title="trait core::borrow::BorrowMut">BorrowMut</a>&lt;T&gt; for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.borrow_mut" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/91522" title="Tracking issue for const_borrow">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#221">source</a></span><a href="#method.borrow_mut" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut" class="fn">borrow_mut</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>T</h4></section></summary><div class='docblock'>Mutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut">Read more</a></div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-From%3CT%3E-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#733">source</a><a href="#impl-From%3CT%3E-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt; for T</h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.from" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/88674" title="Tracking issue for const_convert">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#736">source</a></span><a href="#method.from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fn">from</a>(t: T) -&gt; T</h4></section></summary><div class="docblock"><p>Returns the argument unchanged.</p>
+</div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-Into%3CU%3E-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#717">source</a><a href="#impl-Into%3CU%3E-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;U&gt; for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt;,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.into" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/88674" title="Tracking issue for const_convert">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#725">source</a></span><a href="#method.into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html#tymethod.into" class="fn">into</a>(self) -&gt; U</h4></section></summary><div class="docblock"><p>Calls <code>U::from(self)</code>.</p>
+<p>That is, this conversion is whatever the implementation of
+<code><a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="From">From</a>&lt;T&gt; for U</code> chooses to do.</p>
+</div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-ToOwned-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/alloc/borrow.rs.html#82">source</a><a href="#impl-ToOwned-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html" title="trait alloc::borrow::ToOwned">ToOwned</a> for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle" open><summary><section id="associatedtype.Owned" class="associatedtype trait-impl has-srclink"><a href="#associatedtype.Owned" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html#associatedtype.Owned" class="associatedtype">Owned</a> = T</h4></section></summary><div class='docblock'>The resulting type after obtaining ownership.</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.to_owned" class="method trait-impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/alloc/borrow.rs.html#87">source</a><a href="#method.to_owned" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html#tymethod.to_owned" class="fn">to_owned</a>(&amp;self) -&gt; T</h4></section></summary><div class='docblock'>Creates owned data from borrowed data, usually by cloning. <a href="https://doc.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html#tymethod.to_owned">Read more</a></div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.clone_into" class="method trait-impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/alloc/borrow.rs.html#91">source</a><a href="#method.clone_into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html#method.clone_into" class="fn">clone_into</a>(&amp;self, target: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>T)</h4></section></summary><div class='docblock'>Uses borrowed data to replace owned data, usually by cloning. <a href="https://doc.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html#method.clone_into">Read more</a></div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-TryFrom%3CU%3E-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#775">source</a><a href="#impl-TryFrom%3CU%3E-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt; for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;T&gt;,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle" open><summary><section id="associatedtype.Error-1" class="associatedtype trait-impl has-srclink"><a href="#associatedtype.Error-1" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" class="associatedtype">Error</a> = <a class="enum" href="https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html" title="enum core::convert::Infallible">Infallible</a></h4></section></summary><div class='docblock'>The type returned in the event of a conversion error.</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.try_from" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/88674" title="Tracking issue for const_convert">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#781">source</a></span><a href="#method.try_from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#tymethod.try_from" class="fn">try_from</a>(value: U) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, &lt;T as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Performs the conversion.</div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-TryInto%3CU%3E-for-Surface" class="impl has-srclink"><a class="srclink rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#760">source</a><a href="#impl-TryInto%3CU%3E-for-Surface" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html" title="trait core::convert::TryInto">TryInto</a>&lt;U&gt; for T<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;,</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle" open><summary><section id="associatedtype.Error" class="associatedtype trait-impl has-srclink"><a href="#associatedtype.Error" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#associatedtype.Error" class="associatedtype">Error</a> = &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a></h4></section></summary><div class='docblock'>The type returned in the event of a conversion error.</div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.try_into" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/88674" title="Tracking issue for const_convert">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#766">source</a></span><a href="#method.try_into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#tymethod.try_into" class="fn">try_into</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;U, &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Performs the conversion.</div></details></div></details></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="nvtt_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (270c94e48 2022-12-28)" data-search-js="search-181581080540673f.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-58836c674e2f7bd2.css" ></div></body></html>

@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"nvtt_rs":[["impl <a class=\"trait\" href=\"https://docs.rs/lazy_static/1.4.0/lazy_static/trait.LazyStatic.html\" title=\"trait lazy_static::LazyStatic\">LazyStatic</a> for <a class=\"struct\" href=\"nvtt_rs/struct.CUDA_SUPPORTED.html\" title=\"struct nvtt_rs::CUDA_SUPPORTED\">CUDA_SUPPORTED</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
