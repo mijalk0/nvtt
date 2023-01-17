@@ -1,9 +1,9 @@
 #[allow(unused_imports)]
 use crate::{CubeSurface, Surface};
 
+/// Represents an RGBA channel. For various operations with [`Surface`] and [`CubeSurface`].
 #[repr(i32)]
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-/// Represents an RGBA channel. For various operations with [`Surface`] and [`CubeSurface`].
 pub enum Channel {
     /// Red channel, referred to as channel 0 in the C/C++ API
     R = 0,
@@ -15,7 +15,6 @@ pub enum Channel {
     A = 3,
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 /// Container type for encoded data.
 ///
 /// # Notes
@@ -28,6 +27,7 @@ pub enum Channel {
 /// For DDS containers, NVTT also extends the `dwFlags` field with two more flags.
 /// - `DDPF_SRGB (0x40000000U)` indicates that the texture uses an sRGB transfer function. Note that most readers will ignore this and instead guess the transfer function from the format.
 /// - `DDPF_NORMAL (0x80000000U)` indicates that the texture is a normal map.
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum Container {
     /// DDS without the DX10 header extension. Compatible with legacy readers, but doesn't support BC6 or BC7.
     Dds,
@@ -45,11 +45,11 @@ impl From<Container> for NvttContainer {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 /// Affects how certain cube surface processing algorithms work. For use with
 /// [`CubeSurface::cosine_power_filter()`] and [`CubeSurface::fast_resample()`]
 ///
 /// Use [`EdgeFixup::None`] if unsure.
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum EdgeFixup {
     /// No effect.
     None,
@@ -71,7 +71,6 @@ impl From<EdgeFixup> for nvtt_sys::EdgeFixup {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 /// Quality modes.
 ///
 /// These can be used to trade off speed of compression for lower error, and often selects the specific compression algorithm that will be used. Here's a table showing which (format, quality) combinations support CUDA acceleration:
@@ -82,6 +81,7 @@ impl From<EdgeFixup> for nvtt_sys::EdgeFixup {
 /// | Normal      | Yes | Yes  | Yes | Yes | No   | No   | Yes | Yes | Yes | Yes | Yes        |
 /// | Production  | Yes | Yes  | Yes | Yes | No   | No   | No  | No  | No  | No  | Yes (slow) |
 /// | Highest     | Yes | Yes  | Yes | Yes | No   | No   | No  | No  | No  | No  | Yes (slow) |
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum Quality {
     Fastest,
     Normal,
@@ -101,8 +101,8 @@ impl From<Quality> for NvttQuality {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 /// Alpha mode. For use with [`Surface::set_alpha_mode()`]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum AlphaMode {
     /// This image has no alpha. The alpha channel will be ignored in some forms of compression.
     None,
@@ -135,13 +135,13 @@ impl From<NvttAlphaMode> for AlphaMode {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash)]
 /// Supported block-compression formats, including compressor variants.
 ///
 /// That is:
 ///
 /// - 'DXT1' is a format, 'DXT1a' and 'DXT1n' are DXT1 compressors.
 /// - 'DXT3' is a format, 'DXT3n' is a DXT3 compressor.
+#[derive(Clone, Copy, Debug)]
 pub enum Format {
     /// Linear RGB format.
     Rgb,
@@ -277,8 +277,8 @@ impl From<Format> for NvttFormat {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
 /// Input formats. For use with [`Surface::image()`].
+#[derive(Clone, Copy, Debug)]
 pub enum InputFormat<'a> {
     /// Blue, green, red, and alpha channels. Each component is a `u8`, which is mapped to
     /// `[0, 1]`.
@@ -298,8 +298,8 @@ pub enum InputFormat<'a> {
     R32f(&'a [u8]),
 }
 
-#[derive(Clone, Copy, Debug)]
 /// Split input formats. For use with [`Surface::image_split()`].
+#[derive(Clone, Copy, Debug)]
 pub enum SplitInputFormat<'a> {
     /// Split blue, green, red, and alpha channels. Each component is a `u8`, which is mapped to
     /// `[0, 1]`.
@@ -446,10 +446,10 @@ impl<'a> SplitInputFormat<'a> {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 /// Pixel value types.
 ///
 /// These are used for [`Format::Rgb`]: they indicate how the output should be interpreted, but do not have any influence over the input. They are ignored for other compression modes.
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum PixelType {
     /// Used to indicate a `DXGI_..._UNORM` format
     UnsignedNorm,
@@ -473,8 +473,8 @@ impl From<PixelType> for NvttPixelType {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 /// Texture types. Specifies the dimensionality of a texture.
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum TextureType {
     /// 2D Texture.
     D2,
@@ -505,9 +505,9 @@ impl From<NvttTextureType> for TextureType {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 /// Specifies how to handle coordinates outside the typical image range. For use with
 /// [`Surface::set_wrap_mode()`]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum WrapMode {
     /// Coordinates are clamped, moving them to the closest coordinate inside the image.
     Clamp,
@@ -538,8 +538,8 @@ impl From<NvttWrapMode> for WrapMode {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
 /// A generic filter. Can be either a mipmap filter or a resize filter.
+#[derive(Clone, Copy, Debug)]
 pub struct Filter<T> {
     /// Filter width.
     pub width: f32,
@@ -659,8 +659,8 @@ impl Filter<Resize> {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
 /// A mipmap filter. For use with [`Surface::build_next_mipmap()`].
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Mipmap {
     /// Box filter is quite good and very fast. It has some special paths for downsampling
     /// by exactly a factor of `2`. `filter_width` defaults to `0.5`; `box(x)` is equal to `1`
@@ -713,8 +713,8 @@ impl From<Mipmap> for NvttMipmapFilter {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
 /// A resize filter. For use with [`Surface::resize_filtered()`] and [`Surface::resize_make_square()`].
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Resize {
     /// See [`Mipmap::Box`].
     Box,
@@ -745,8 +745,8 @@ impl From<Resize> for NvttResizeFilter {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
 /// Tone mapping functions. For use with [`Surface::tonemap()`]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum ToneMapper {
     /// Colors inside `[0,1)^3` are preserved; colors outside are tone mapped using `(r', g', b') = (r, g, b)/max(r, g, b)`.
     /// This clamps colors to the RGB cube, but preserves hue. It is not invertible.
@@ -768,13 +768,13 @@ impl From<ToneMapper> for NvttToneMapper {
     }
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 /// Specifies a normal transformation. For use with [`Surface::transform_normals()`] and [`Surface::reconstruct_normals()`].
 ///
 /// Used to store 3D `(x, y, z)` normals in 2D `(x, y)`.
 ///
 /// We define these in terms of their 2D -> 3D reconstructions, since their transformations
 /// are the inverse of the reconstructions. Most require `z >= 0.0f`.
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum NormalTransform {
     /// Reconstructs the `z` component using `z = sqrt(1 - x^2 + y^2)`.
     Orthographic,
@@ -806,9 +806,9 @@ impl From<NormalTransform> for NvttNormalTransform {
     }
 }
 
+/// Swizzle order. For use with [`Surface::swizzle()`].
 #[repr(i32)]
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-/// Swizzle order. For use with [`Surface::swizzle()`].
 pub enum Swizzle {
     /// Set to the current red channel.
     R = 0,
@@ -826,7 +826,6 @@ pub enum Swizzle {
     One = 6,
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 /// Extents rounding mode. For use with [`Surface::resize_rounded()`] and
 /// [`Surface::resize_make_square()`].
 ///
@@ -839,6 +838,7 @@ pub enum Swizzle {
 /// If the texture is a cube map, the width and height are then averaged to make the resulting texture square.
 ///
 /// Finally, extents are rounded to a set of possible sizes depending on this enum.
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum RoundMode {
     /// Each extent is left as-is.
     None,

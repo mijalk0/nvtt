@@ -17,17 +17,23 @@
 //!
 //! ## Windows
 //!
-//! Windows 10 or 11 (64-bit) are required.
+//! Windows 10 or 11 (64-bit) are required. The `Path` environment variable must also contain
+//! the path to the directory containing `nvtt.dll`. Note that this must be done manually, it
+//! is not done in a standard Nvidia Texture Tools install.
 //!
 //! ## Linux
 //!
 //! 64-bit only; Ubuntu 16.04+ or a similarly compatible distro is required. `libc.so` version 6 or
 //! higher is required as well.
 //!
+//! # Limitations
+//!
+//! Currently there is no file I/O support, no low-level (`nvtt_lowlevel.h`) wrapper, and no batch compression.
+//!
 //! # Using nvtt
 //!
 //! ```
-//! # use nvtt::{Context, CompressionOptions, CUDA_SUPPORTED, Format, InputFormat, OutputOptions, Surface};
+//! # use nvtt_rs::{Context, CompressionOptions, CUDA_SUPPORTED, Format, InputFormat, OutputOptions, Surface};
 //! // Create a surface
 //! let input = InputFormat::Bgra8Ub {
 //!     data: &[0u8; 16 * 16 * 4],
@@ -37,6 +43,7 @@
 //!
 //! // Create the compression context; enable CUDA if possible
 //! let mut context = Context::new();
+//! #[cfg(feature = "cuda")]
 //! if *CUDA_SUPPORTED {
 //!     context.set_cuda_acceleration(true);
 //! }
@@ -45,26 +52,27 @@
 //! let mut compression_options = CompressionOptions::new();
 //! compression_options.set_format(Format::Bc7);
 //!
-//! // Specify how to write the compressed data. Here, we write to temporary file.
-//! let mut output_options = OutputOptions::new_temp().unwrap();
+//! // Specify how to write the compressed data; indicate as sRGB
+//! let mut output_options = OutputOptions::new();
+//! output_options.set_srgb_flag(true);
 //!
 //! // Write the DDS header.
-//! assert!(context.output_header(
+//! let header = context.output_header(
 //!     &image,
 //!     1, // number of mipmaps
 //!     &compression_options,
-//!     &mut output_options,
-//! ));
+//!     &output_options,
+//! ).unwrap();
 //!
 //! // Compress and write the compressed data.
-//! assert!(context.compress(
+//! let bytes = context.compress(
 //!     &image,
 //!     &compression_options,
-//!     &mut output_options,
-//! ));
+//!     &output_options,
+//! ).unwrap();
 //!
-//! // Get raw bytes, and delete temporary file
-//! let _bytes = output_options.to_bytes().unwrap();
+//! // Bc7 is 1 byte per pixel.
+//! assert_eq!(16 * 16, bytes.len());
 //! ```
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
@@ -226,6 +234,37 @@ impl Drop for CompressionOptions {
     }
 }
 
+macro_rules! make_thread_local {
+    ($buffer:ident) => {
+        std::thread_local! {
+            static $buffer: core::cell::RefCell<Vec<u8>> = core::cell::RefCell::new(Vec::new());
+        }
+
+        extern "C" fn output_callback(
+            data_ptr: *const libc::c_void,
+            len: libc::c_int,
+        ) -> nvtt_sys::NvttBoolean {
+            let len = len as usize;
+            let data = unsafe { std::slice::from_raw_parts(data_ptr as *const u8, len) };
+            $buffer.with(|b| b.borrow_mut().extend_from_slice(data));
+            true.into()
+        }
+
+        // Clear in case it was used before
+        $buffer.with(|b| b.borrow_mut().clear());
+    };
+}
+
+macro_rules! write_output {
+        ($buffer:ident, $func:ident, $output_options:expr, $($arg:expr),* $(,)?) => {
+        unsafe {
+            nvtt_sys::nvttSetOutputOptionsOutputHandler($output_options.0, None, Some(output_callback), None);
+            let res: bool = $func($($arg,)*).into();
+            res.then_some($buffer.with(|b| b.replace(Vec::new())))
+        }
+        };
+    }
+
 use nvtt_sys::NvttContext;
 /// Compression context.
 pub struct Context(*mut NvttContext);
@@ -234,21 +273,27 @@ impl Context {
     /// Constructs a new compression context.
     pub fn new() -> Self {
         unsafe {
+            // Creating a Context seems to default with CUDA enabled. So, this must be called
+            // beforehand.
+            nvtt_sys::nvttUseCurrentDevice();
             let ptr = nvtt_sys::nvttCreateContext();
             if ptr.is_null() {
                 panic!("failed to allocate");
             } else {
+                // Disable it by default, in case the cuda feature is not enabled.
+                nvtt_sys::nvttSetContextCudaAcceleration(ptr, false.into());
                 Self(ptr)
             }
         }
     }
 
-    #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
     /// Enable/Disable CUDA acceleration; initializes CUDA if not already initialized.
     ///
     /// # Panics
     ///
     /// Panics if [`struct@CUDA_SUPPORTED`] is false.
+    #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn set_cuda_acceleration(&mut self, enable: bool) {
         if *CUDA_SUPPORTED {
             unsafe { nvtt_sys::nvttSetContextCudaAcceleration(self.0, enable.into()) }
@@ -257,8 +302,9 @@ impl Context {
         }
     }
 
-    #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
     /// Check if CUDA acceleration is enabled.
+    #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn is_cuda_acceleration_enabled(&self) -> bool {
         if !*CUDA_SUPPORTED {
             false
@@ -268,50 +314,54 @@ impl Context {
     }
 
     #[must_use]
-    /// Write the [`Container`]'s header to the output. Returns `true` on success.
+    /// Write the [`Container`]'s header to a `Vec<u8>`. Returns `Some(Vec<u8>)` on success.
     pub fn output_header(
         &self,
         img: &Surface,
         mipmap_count: u32,
         compression_options: &CompressionOptions,
-        output_options: &mut OutputOptions,
-    ) -> bool {
-        unsafe {
-            nvtt_sys::nvttContextOutputHeader(
-                self.0,
-                img.0,
-                mipmap_count as i32,
-                compression_options.0,
-                output_options.inner,
-            )
-            .into()
-        }
+        output_options: &OutputOptions,
+    ) -> Option<Vec<u8>> {
+        let func = nvtt_sys::nvttContextOutputHeader;
+        make_thread_local!(BUFFER);
+        write_output!(
+            BUFFER,
+            func,
+            output_options,
+            self.0,
+            img.0,
+            mipmap_count as i32,
+            compression_options.0,
+            output_options.0,
+        )
     }
 
     #[must_use]
-    /// Write the [`Container`]'s header to the output. Returns `true` on success.
+    /// Write the [`Container`]'s header to a `Vec<u8>`. Returns `Some(Vec<u8>)` on success.
     pub fn output_header_cube(
         &self,
         cube: &CubeSurface,
         mipmap_count: u32,
         compression_options: &CompressionOptions,
-        output_options: &mut OutputOptions,
-    ) -> bool {
-        unsafe {
-            nvtt_sys::nvttContextOutputHeaderCube(
-                self.0,
-                cube.0,
-                mipmap_count as i32,
-                compression_options.0,
-                output_options.inner,
-            )
-            .into()
-        }
+        output_options: &OutputOptions,
+    ) -> Option<Vec<u8>> {
+        let func = nvtt_sys::nvttContextOutputHeaderCube;
+        make_thread_local!(CUBE_HEADER_BUFFER);
+        write_output!(
+            CUBE_HEADER_BUFFER,
+            func,
+            output_options,
+            self.0,
+            cube.0,
+            mipmap_count as i32,
+            compression_options.0,
+            output_options.0,
+        )
     }
 
     #[must_use]
     #[allow(clippy::too_many_arguments)]
-    /// Write the [`Container`]'s header to the output. Returns `true` on success.
+    /// Write the [`Container`]'s header to a `Vec<u8>`. Returns `Some(Vec<u8>)` on success.
     pub fn output_header_data(
         &self,
         tex_type: TextureType,
@@ -321,71 +371,107 @@ impl Context {
         mipmap_count: u32,
         is_normal_map: bool,
         compression_options: &CompressionOptions,
-        output_options: &mut OutputOptions,
-    ) -> bool {
-        unsafe {
-            nvtt_sys::nvttContextOutputHeaderData(
-                self.0,
-                tex_type.into(),
-                w as i32,
-                h as i32,
-                d as i32,
-                mipmap_count as i32,
-                is_normal_map.into(),
-                compression_options.0,
-                output_options.inner,
-            )
-            .into()
-        }
+        output_options: &OutputOptions,
+    ) -> Option<Vec<u8>> {
+        let func = nvtt_sys::nvttContextOutputHeaderData;
+        make_thread_local!(DATA_HEADER_BUFFER);
+        write_output!(
+            DATA_HEADER_BUFFER,
+            func,
+            output_options,
+            self.0,
+            tex_type.into(),
+            w as i32,
+            h as i32,
+            d as i32,
+            mipmap_count as i32,
+            is_normal_map.into(),
+            compression_options.0,
+            output_options.0,
+        )
     }
 
-    /// Compress the [`Surface`] and write the compressed data to the output. Returns `true` on success.
+    /// Compress the [`Surface`] and write the compressed data to a `Vec<u8>`. Returns `Some(Vec<u8>)` on success.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use nvtt_rs::{Context, CompressionOptions, CUDA_SUPPORTED, Format, InputFormat, OutputOptions, Surface};
+    /// let input = InputFormat::Bgra8Ub {
+    ///     data: &[0u8; 100 * 100 * 4],
+    ///     unsigned_to_signed:  false,
+    /// };
+    /// let image = Surface::image(input, 100, 100, 1).unwrap();
+    /// let context = Context::new();
+    ///
+    /// let mut compression_options = CompressionOptions::new();
+    /// // Just leave it as is
+    /// compression_options.set_format(Format::Rgba);
+    ///
+    /// let output_options = OutputOptions::new();
+    ///
+    /// // Compress and write the compressed data.
+    /// let bytes = context.compress(
+    ///     &image,
+    ///     &compression_options,
+    ///     &output_options,
+    /// ).unwrap();
+    ///
+    /// assert_eq!(100 * 100 * 4, bytes.len());
+    /// for byte in bytes {
+    ///     assert_eq!(0, byte);
+    /// }
+    /// ```
     pub fn compress(
         &self,
         img: &Surface,
         compression_options: &CompressionOptions,
-        output_options: &mut OutputOptions,
-    ) -> bool {
+        output_options: &OutputOptions,
+    ) -> Option<Vec<u8>> {
         // Ignored
         let face = 0;
         let mipmap = 0;
 
-        unsafe {
-            nvtt_sys::nvttContextCompress(
-                self.0,
-                img.0,
-                face,
-                mipmap,
-                compression_options.0,
-                output_options.inner,
-            )
-            .into()
-        }
+        let func = nvtt_sys::nvttContextCompress;
+        make_thread_local!(BUFFER);
+        write_output!(
+            BUFFER,
+            func,
+            output_options,
+            self.0,
+            img.0,
+            face,
+            mipmap,
+            compression_options.0,
+            output_options.0,
+        )
     }
 
-    /// Compress the [`CubeSurface`] and write the compressed data to the output. Returns `true` on success.
+    /// Compress the [`CubeSurface`] and write the compressed data to a `Vec<u8>`. Returns `Some(Vec<u8>)` on success.
     pub fn compress_cube(
         &self,
         cube: &CubeSurface,
         compression_options: &CompressionOptions,
-        output_options: &mut OutputOptions,
-    ) -> bool {
+        output_options: &OutputOptions,
+    ) -> Option<Vec<u8>> {
         // Ignored
         let mipmap = 0;
 
-        unsafe {
-            nvtt_sys::nvttContextCompressCube(
-                self.0,
-                cube.0,
-                mipmap,
-                compression_options.0,
-                output_options.inner,
-            )
-            .into()
-        }
+        let func = nvtt_sys::nvttContextCompressCube;
+        make_thread_local!(CUBE_BUFFER);
+        write_output!(
+            CUBE_BUFFER,
+            func,
+            output_options,
+            self.0,
+            cube.0,
+            mipmap,
+            compression_options.0,
+            output_options.0,
+        )
     }
 
-    /// Compress and write data to the output. Returns `true` on success.
+    /// Compress and write data to a `Vec<u8>`. Returns `Some(Vec<u8>)` on success.
     ///
     /// # Panics
     ///
@@ -397,8 +483,8 @@ impl Context {
         d: u32,
         rgba: &[f32],
         compression_options: &CompressionOptions,
-        output_options: &mut OutputOptions,
-    ) -> bool {
+        output_options: &OutputOptions,
+    ) -> Option<Vec<u8>> {
         if w * h * d < rgba.len() as u32 {
             panic!("rgba does match dimensions");
         }
@@ -407,20 +493,22 @@ impl Context {
         let face = 0;
         let mipmap = 0;
 
-        unsafe {
-            nvtt_sys::nvttContextCompressData(
-                self.0,
-                w as i32,
-                h as i32,
-                d as i32,
-                face,
-                mipmap,
-                rgba.as_ptr(),
-                compression_options.0,
-                output_options.inner,
-            )
-            .into()
-        }
+        let func = nvtt_sys::nvttContextCompressData;
+        make_thread_local!(DATA_BUFFER);
+        write_output!(
+            DATA_BUFFER,
+            func,
+            output_options,
+            self.0,
+            w as i32,
+            h as i32,
+            d as i32,
+            face,
+            mipmap,
+            rgba.as_ptr(),
+            compression_options.0,
+            output_options.0,
+        )
     }
 
     /// Returns the total compressed size of mips `0...mipmap_count - 1`, without compressing the image.
@@ -490,20 +578,23 @@ impl Context {
         }
     }
 
-    /// Quantize a Surface to the number of bits per channel of the given format.
-    ///
-    /// This shouldn't be called unless you're confident you want to do this. Compressors quantize
-    /// automatically, and calling this will cause compression to minimize error with respect to
-    /// the quantized values, rather than the original image.
-    ///
-    /// See also [`Surface::quantize()`] and [`Surface::binarize()`].
-    ///
-    /// # Safety
-    ///
-    /// See Nvidia SDK documentation for more information.
-    pub unsafe fn quantize(&self, tex: &mut Surface, compression_options: &CompressionOptions) {
-        unsafe { nvtt_sys::nvttContextQuantize(self.0, tex.0, compression_options.0) }
-    }
+    // nvttContextQuantize is not in the windows dll, even though it is in the C header.
+    // So this function is not usable at the moment
+    //
+    // /// Quantize a Surface to the number of bits per channel of the given format.
+    // ///
+    // /// This shouldn't be called unless you're confident you want to do this. Compressors quantize
+    // /// automatically, and calling this will cause compression to minimize error with respect to
+    // /// the quantized values, rather than the original image.
+    // ///
+    // /// See also [`Surface::quantize()`] and [`Surface::binarize()`].
+    // ///
+    // /// # Safety
+    // ///
+    // /// See Nvidia SDK documentation for more information.
+    // pub unsafe fn quantize(&self, tex: &mut Surface, compression_options: &CompressionOptions) {
+    //     unsafe { nvtt_sys::nvttContextQuantize(self.0, tex.0, compression_options.0) }
+    // }
 }
 
 impl Default for Context {
@@ -576,7 +667,7 @@ impl CubeSurface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CubeSurface, CubeLayout, Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{CubeSurface, CubeLayout, Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let bytes = [0u8; (10 * 60 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
@@ -598,7 +689,7 @@ impl CubeSurface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CubeSurface, CubeLayout, Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{CubeSurface, CubeLayout, Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let bytes = [0u8; (10 * 60 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
@@ -719,179 +810,55 @@ impl Drop for CubeSurface {
 }
 
 use nvtt_sys::NvttOutputOptions;
-use std::path::Path;
-/// Holds output file path, container type, and options specific to the container.
-///
-/// Unlike the Nvidia SDK, this must be backed by a file.
-pub struct OutputOptions {
-    inner: *mut NvttOutputOptions,
-    file: *mut libc::FILE,
-    path: Option<OutputPath>,
-}
-
-use std::path::PathBuf;
-use tempfile::TempPath;
-enum OutputPath {
-    Concrete(PathBuf),
-    Temporary(TempPath),
-}
-
-impl AsRef<Path> for OutputPath {
-    fn as_ref(&self) -> &Path {
-        match self {
-            Self::Concrete(path_buf) => path_buf,
-            Self::Temporary(temp_path) => temp_path,
-        }
-    }
-}
+/// Holds container type and options specific to the container.
+pub struct OutputOptions(*mut NvttOutputOptions);
 
 impl OutputOptions {
-    /// Constructs a new `OutputOptions` struct backed by a new file at `path`. Sets output
-    /// options to the default values.
-    pub fn new_file(path: impl AsRef<Path>) -> Result<Self, std::io::Error> {
-        let file = std::fs::OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create_new(true)
-            .open(path.as_ref())?;
-        let path = path.as_ref().to_path_buf();
-
-        // If there is an error, we need to delete the file
-        match Self::with_file(file, OutputPath::Concrete(path.clone())) {
-            Ok(output_options) => Ok(output_options),
-            Err(err) => {
-                std::fs::remove_file(path)?;
-                Err(err)
-            }
-        }
-    }
-
-    /// Constructs a new `OutputOptions` struct backed by a temporary file. Sets output options
-    /// to the default values.
-    ///
-    /// When this struct is dropped, the file will be destroyed.
-    pub fn new_temp() -> Result<Self, std::io::Error> {
-        let tempfile = tempfile::NamedTempFile::new()?;
-        let (file, path) = tempfile.into_parts();
-
-        // If there is an error, the file will be automatically deleted
-        // due to TempPath's drop()
-        Self::with_file(file, OutputPath::Temporary(path))
-    }
-
-    fn with_file(file: std::fs::File, path: OutputPath) -> Result<Self, std::io::Error> {
-        let ptr;
+    /// Constructs a new `OutputOptions` struct. Sets output options to the default values.
+    pub fn new() -> Self {
         unsafe {
-            ptr = nvtt_sys::nvttCreateOutputOptions();
+            let ptr = nvtt_sys::nvttCreateOutputOptions();
             if ptr.is_null() {
                 panic!("failed to allocate");
             }
+
+            Self(ptr)
         }
-
-        cfg_if::cfg_if! {
-            if #[cfg(unix)] {
-                use std::os::unix::prelude::IntoRawFd;
-                // Takes ownership
-                let fd: libc::c_int = file.into_raw_fd();
-            } else if #[cfg(windows)] {
-                use std::os::windows::io::IntoRawHandle;
-                // Takes ownership
-                let handle_ptr = file.into_raw_handle();
-                // Need to cast according to
-                // https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/open-osfhandle?view=msvc-170
-                let handle = isize::from_ne_bytes((handle_ptr as usize).to_ne_bytes());
-                unsafe {
-                    // Takes ownership again, according to above
-                    fd = libc::open_osfhandle(handle, 0);
-                    if fd == -1 {
-                        nvtt_sys::nvttDestroyOutputOptions(ptr);
-                        return Err(std::io::Error::new(
-                            std::io::ErrorKind::Other,
-                            "failed to open handle as file descriptor"
-                        ));
-                    }
-                }
-            }
-        }
-
-        unsafe {
-            // On windows or linux, this will take ownership again.
-            // By the end of the function, all ownership will be held by this pointer, regardless
-            // of OS.
-            let file = libc::fdopen(fd, b"r+\0" as *const u8 as *const i8);
-            if file.is_null() {
-                nvtt_sys::nvttDestroyOutputOptions(ptr);
-                libc::close(fd);
-                return Err(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    "failed to open file for reading and writing",
-                ));
-            }
-            // The function requests a *mut c_void but immediately casts it to a *mut FILE
-            // internally
-            nvtt_sys::nvttSetOutputOptionsFileHandle(ptr, file as *mut libc::c_void);
-            Ok(Self {
-                inner: ptr,
-                file,
-                path: Some(path),
-            })
-        }
-    }
-
-    /// Consumes self and reads the underlying file. If this was backed by a temporary file, the
-    /// underlying file will be deleted.
-    pub fn to_bytes(self) -> Result<Vec<u8>, std::io::Error> {
-        // Use ManuallyDrop so that the file can still exist after calling fclose
-        let mut output_options = std::mem::ManuallyDrop::new(self);
-        let path = output_options.path.take().unwrap();
-
-        // Handle closing first
-        unsafe {
-            nvtt_sys::nvttDestroyOutputOptions(output_options.inner);
-            libc::fclose(output_options.file);
-        }
-
-        // At this point, the file name at output.path must still exist, and we can reopen it to
-        // get bytes
-        let bytes = std::fs::read(path.as_ref())?;
-
-        // If the path was Output::Temporary, the TempPath destructor will be called and it will be
-        // removed
-        drop(path);
-        Ok(bytes)
     }
 
     /// Set output header.
     pub fn set_output_header(&mut self, output_header: bool) {
-        unsafe { nvtt_sys::nvttSetOutputOptionsOutputHeader(self.inner, output_header.into()) }
+        unsafe { nvtt_sys::nvttSetOutputOptionsOutputHeader(self.0, output_header.into()) }
     }
 
     /// Set container.
     pub fn set_container(&mut self, container: Container) {
-        unsafe { nvtt_sys::nvttSetOutputOptionsContainer(self.inner, container.into()) }
+        unsafe { nvtt_sys::nvttSetOutputOptionsContainer(self.0, container.into()) }
     }
 
     /// Set user version.
     pub fn set_user_version(&mut self, version: i32) {
-        unsafe { nvtt_sys::nvttSetOutputOptionsUserVersion(self.inner, version) }
+        unsafe { nvtt_sys::nvttSetOutputOptionsUserVersion(self.0, version) }
     }
 
     /// Set the sRGB flag, indicating whether this file stores data with an sRGB transfer
     /// function (`true`) or a linear transfer function (`false`).
     pub fn set_srgb_flag(&mut self, b: bool) {
-        unsafe { nvtt_sys::nvttSetOutputOptionsSrgbFlag(self.inner, b.into()) }
+        unsafe { nvtt_sys::nvttSetOutputOptionsSrgbFlag(self.0, b.into()) }
+    }
+}
+
+impl Default for OutputOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
 impl Drop for OutputOptions {
     fn drop(&mut self) {
         unsafe {
-            nvtt_sys::nvttDestroyOutputOptions(self.inner);
-            libc::fclose(self.file);
+            nvtt_sys::nvttDestroyOutputOptions(self.0);
         }
-
-        // After the file is closed for reading/writing, if self.path is Output::Temporary,
-        // the destructor will be called and the file will be deleted
     }
 }
 
@@ -980,7 +947,7 @@ impl Surface {
     ///
     /// # Examples
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel};
     /// # use approx::assert_relative_eq;
     /// let input = InputFormat::Bgra8Ub {
     ///     data: &[0, 255, 255, 0],
@@ -994,7 +961,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel};
     /// # use approx::assert_relative_eq;
     /// let input = InputFormat::Bgra8Ub {
     ///     data: &[0, 255, 255, 0],
@@ -1008,7 +975,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel};
     /// # use approx::assert_relative_eq;
     /// let r_bytes = 3.0_f32.to_ne_bytes();
     /// let input = InputFormat::R32f(&r_bytes);
@@ -1020,7 +987,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, SurfaceError};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, SurfaceError};
     /// # use approx::assert_relative_eq;
     /// let input = InputFormat::Bgra8Ub {
     ///     data: &[0, 0, 0, 0],
@@ -1090,7 +1057,7 @@ impl Surface {
     ///
     /// # Examples
     /// ```rust
-    /// # use nvtt::{Surface, SplitInputFormat, Channel};
+    /// # use nvtt_rs::{Surface, SplitInputFormat, Channel};
     /// # use approx::assert_relative_eq;
     /// let input = SplitInputFormat::Bgra8Ub {
     ///     b: &[0],
@@ -1106,7 +1073,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{Surface, SplitInputFormat, Channel};
+    /// # use nvtt_rs::{Surface, SplitInputFormat, Channel};
     /// # use approx::assert_relative_eq;
     /// let r_bytes = 3.0_f32.to_ne_bytes();
     /// let input = SplitInputFormat::R32f(&r_bytes);
@@ -1118,7 +1085,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{Surface, SplitInputFormat, Channel, SurfaceError};
+    /// # use nvtt_rs::{Surface, SplitInputFormat, Channel, SurfaceError};
     /// # use approx::assert_relative_eq;
     /// let input = SplitInputFormat::Bgra8Ub {
     ///     b: &[0],
@@ -1222,7 +1189,8 @@ impl Surface {
     /// [`Surface::gpu_data_ptr()`] is null.
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// #[cfg(feature = "cuda")]
     /// if *CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1242,6 +1210,7 @@ impl Surface {
     /// }
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn on_cpu(&self) -> bool {
         !self.on_gpu()
     }
@@ -1250,7 +1219,8 @@ impl Surface {
     /// [`Surface::gpu_data_ptr()`] is not null.
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// #[cfg(feature = "cuda")]
     /// if *CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1270,6 +1240,7 @@ impl Surface {
     /// }
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn on_gpu(&self) -> bool {
         !self.gpu_data_ptr().is_null()
     }
@@ -1284,7 +1255,8 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// #[cfg(feature = "cuda")]
     /// if *CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1297,7 +1269,7 @@ impl Surface {
     /// ```
     ///
     /// ```should_panic
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
     /// if !*CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1312,6 +1284,7 @@ impl Surface {
     /// # }
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn to_gpu(&mut self) {
         if !*CUDA_SUPPORTED {
             panic!("cuda is not supported");
@@ -1330,7 +1303,8 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// #[cfg(feature = "cuda")]
     /// if *CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1346,7 +1320,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
     /// if !*CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1360,6 +1334,7 @@ impl Surface {
     /// }
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn to_cpu(&mut self) {
         if self.on_gpu() {
             unsafe {
@@ -1376,7 +1351,8 @@ impl Surface {
     /// It is undefined behaviour to derefence this pointer on the CPU, as it is not a CPU pointer.
     ///
     /// ```ignore
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// #[cfg(feature = "cuda")]
     /// if *CUDA_SUPPORTED {
     ///     let input_format = InputFormat::Bgra8Ub {
     ///         data: &[255, 255, 255, 255],
@@ -1394,6 +1370,7 @@ impl Surface {
     /// }
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "cuda")))]
+    #[cfg(feature = "cuda")]
     pub fn gpu_data_ptr(&self) -> *const f32 {
         unsafe { nvtt_sys::nvttSurfaceGPUData(self.0) }
     }
@@ -1441,17 +1418,20 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
     /// # use approx::assert_relative_eq;
     /// let r_bytes = 1.0_f32.to_ne_bytes();
     /// let input = InputFormat::R32f(&r_bytes);
     /// let mut surface = Surface::image(input, 1, 1, 1).unwrap();
     ///
-    /// if *CUDA_SUPPORTED {
-    ///     surface.to_gpu();
-    ///     assert!(surface.on_gpu());
-    /// } else {
-    ///     assert!(surface.on_cpu());
+    /// #[cfg(feature = "cuda")]
+    /// {
+    ///     if *CUDA_SUPPORTED {
+    ///         surface.to_gpu();
+    ///         assert!(surface.on_gpu());
+    ///     } else {
+    ///         assert!(surface.on_cpu());
+    ///     }
     /// }
     ///
     /// // Incurs a GPU-CPU copy
@@ -1463,10 +1443,13 @@ impl Surface {
     /// println!("{}", x);
     ///
     /// // Remains on GPU
-    /// if *CUDA_SUPPORTED {
-    ///     assert!(surface.on_gpu());
-    /// } else {
-    ///     assert!(surface.on_cpu());
+    /// #[cfg(feature = "cuda")]
+    /// {
+    ///     if *CUDA_SUPPORTED {
+    ///         assert!(surface.on_gpu());
+    ///     } else {
+    ///         assert!(surface.on_cpu());
+    ///     }
     /// }
     /// ```
     pub fn data(&self) -> &[f32] {
@@ -1488,26 +1471,25 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat};
     /// let r_bytes = 1.0_f32.to_ne_bytes();
     /// let input = InputFormat::R32f(&r_bytes);
     /// let mut surface = Surface::image(input, 1, 1, 1).unwrap();
     ///
-    /// cfg_if::cfg_if! {
-    ///     if #[cfg(feature = "cuda")] {
-    ///         if *CUDA_SUPPORTED {
-    ///             surface.to_gpu();
-    ///             assert!(surface.on_gpu());
-    ///         } else {
-    ///             assert!(surface.on_cpu());
-    ///         }
+    /// #[cfg(feature = "cuda")]
+    /// {
+    ///     if *CUDA_SUPPORTED {
+    ///         surface.to_gpu();
+    ///         assert!(surface.on_gpu());
     ///     } else {
-    ///          assert!(surface.on_cpu());
+    ///         assert!(surface.on_cpu());
     ///     }
     /// }
     ///
     /// // Moves to CPU
     /// surface.data_mut()[0] = 0.0;
+    ///
+    /// #[cfg(feature = "cuda")]
     /// assert!(surface.on_cpu());
     /// ```
     pub fn data_mut(&mut self) -> &mut [f32] {
@@ -1534,17 +1516,20 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat, Channel};
     /// # use approx::assert_relative_eq;
     /// let r_bytes = 1.0_f32.to_ne_bytes();
     /// let input = InputFormat::R32f(&r_bytes);
     /// let mut surface = Surface::image(input, 1, 1, 1).unwrap();
     ///
-    /// if *CUDA_SUPPORTED {
-    ///     surface.to_gpu();
-    ///     assert!(surface.on_gpu());
-    /// } else {
-    ///     assert!(surface.on_cpu());
+    /// #[cfg(feature = "cuda")]
+    /// {
+    ///     if *CUDA_SUPPORTED {
+    ///         surface.to_gpu();
+    ///         assert!(surface.on_gpu());
+    ///     } else {
+    ///         assert!(surface.on_cpu());
+    ///     }
     /// }
     ///
     /// // Each call incurs a GPU-CPU copy
@@ -1559,10 +1544,14 @@ impl Surface {
     /// assert_relative_eq!(1.0, x);
     ///
     /// // Remains on GPU
-    /// if *CUDA_SUPPORTED {
-    ///     assert!(surface.on_gpu());
-    /// } else {
-    ///     assert!(surface.on_cpu());
+    /// #[cfg(feature = "cuda")]
+    /// {
+    ///     if *CUDA_SUPPORTED {
+    ///         surface.to_gpu();
+    ///         assert!(surface.on_gpu());
+    ///     } else {
+    ///         assert!(surface.on_cpu());
+    ///     }
     /// }
     /// ```
     pub fn channel(&self, channel: Channel) -> &[f32] {
@@ -1586,20 +1575,25 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{CUDA_SUPPORTED, Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{CUDA_SUPPORTED, Surface, InputFormat, Channel};
     /// let r_bytes = 1.0_f32.to_ne_bytes();
     /// let input = InputFormat::R32f(&r_bytes);
     /// let mut surface = Surface::image(input, 1, 1, 1).unwrap();
     ///
-    /// if *CUDA_SUPPORTED {
-    ///     surface.to_gpu();
-    ///     assert!(surface.on_gpu());
-    /// } else {
-    ///     assert!(surface.on_cpu());
+    /// #[cfg(feature = "cuda")]
+    /// {
+    ///     if *CUDA_SUPPORTED {
+    ///         surface.to_gpu();
+    ///         assert!(surface.on_gpu());
+    ///     } else {
+    ///         assert!(surface.on_cpu());
+    ///     }
     /// }
     ///
     /// // Moves to CPU
     /// surface.channel_mut(Channel::R)[0] = 0.0;
+    ///
+    /// #[cfg(feature = "cuda")]
     /// assert!(surface.on_cpu());
     /// ```
     pub fn channel_mut(&mut self, channel: Channel) -> &mut [f32] {
@@ -1847,7 +1841,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel};
     /// let bytes = [0u8; (8 * 5 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
     ///
@@ -1856,7 +1850,7 @@ impl Surface {
     /// ```
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel};
     /// let bytes = [0u8; (7 * 3 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
     ///
@@ -1893,7 +1887,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// let bytes = [0u8; (32 * 32 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
     /// let mut surface = Surface::image(input, 32, 32, 1).unwrap();
@@ -1944,7 +1938,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let bytes = [0u8; (32 * 32 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
@@ -1981,7 +1975,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let bytes = [0u8; (32 * 32 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
@@ -2016,7 +2010,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let bytes = [0u8; (4 * 4 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
@@ -2171,7 +2165,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let bytes = [0u8; (4 * 4 * std::mem::size_of::<f32>())];
     /// let input = InputFormat::R32f(&bytes);
@@ -2221,7 +2215,7 @@ impl Surface {
     ///
     /// # Examples
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let input = InputFormat::Bgra8Ub {
     ///     data: &[255, 255, 255, 0],
@@ -2261,7 +2255,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let input = InputFormat::Bgra8Ub {
     ///     data: &[0, 0, 0, 0],
@@ -2303,7 +2297,7 @@ impl Surface {
     /// # Examples
     ///
     /// ```rust
-    /// # use nvtt::{Surface, InputFormat, Channel, Filter};
+    /// # use nvtt_rs::{Surface, InputFormat, Channel, Filter};
     /// # use approx::assert_relative_eq;
     /// let input = InputFormat::Bgra8Ub {
     ///     data: &[53, 234, 26, 158],
@@ -3114,7 +3108,9 @@ impl Clone for Surface {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Channel, InputFormat, Surface, TextureType, CUDA_SUPPORTED};
+    #[cfg(feature = "cuda")]
+    use crate::CUDA_SUPPORTED;
+    use crate::{Channel, InputFormat, Surface, TextureType};
     use approx::assert_relative_eq;
 
     #[test]
@@ -3192,6 +3188,7 @@ mod tests {
         assert_relative_eq!(1.0, surface.channel(Channel::A)[0]);
     }
 
+    #[cfg(feature = "cuda")]
     const BASIC_INPUT: InputFormat = InputFormat::Bgra8Ub {
         data: &[255, 255, 255, 255],
         unsigned_to_signed: false,
@@ -3201,7 +3198,7 @@ mod tests {
     // channel() / data()         should not force a CPU copy
     // channel_mut() / data_mut() should force a CPU copy
     #[test]
-    #[cfg_attr(not(feature = "cuda"), ignore)]
+    #[cfg(feature = "cuda")]
     fn channel_mut_cpu_gpu() {
         if *CUDA_SUPPORTED {
             let mut surface = Surface::image(BASIC_INPUT, 1, 1, 1).unwrap();
@@ -3248,7 +3245,7 @@ mod tests {
 
     // Test cpu gpu behaviour with library function (should not require a CPU copy)
     #[test]
-    #[cfg_attr(not(feature = "cuda"), ignore)]
+    #[cfg(feature = "cuda")]
     fn function_mut_cpu_gpu() {
         if *CUDA_SUPPORTED {
             let mut surface = Surface::image(BASIC_INPUT, 1, 1, 1).unwrap();
@@ -3293,5 +3290,83 @@ mod tests {
             surface.to_rgbe(25, 25);
             surface.from_rgbe(25, 25);
         }
+    }
+
+    #[test]
+    fn compression() {
+        use crate::{
+            CompressionOptions, Context, Format, InputFormat, OutputOptions, Quality, Surface,
+        };
+        let input = InputFormat::Bgra8Ub {
+            data: &[0u8; 16 * 16 * 4],
+            unsigned_to_signed: false,
+        };
+        let image = Surface::image(input, 16, 16, 1).unwrap();
+
+        let context = Context::new();
+        // Hacky but removes warnings for now so whatever (it's a test)
+        #[cfg(feature = "cuda")]
+        let context = {
+            if *crate::CUDA_SUPPORTED {
+                let mut context = context;
+                context.set_cuda_acceleration(true);
+                context
+            } else {
+                context
+            }
+        };
+
+        let mut compression_options = CompressionOptions::new();
+        compression_options.set_quality(Quality::Fastest);
+
+        let output_options = OutputOptions::new();
+
+        compression_options.set_format(Format::Bc1);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16 / 2, bytes.len());
+
+        compression_options.set_format(Format::Bc2);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16, bytes.len());
+
+        compression_options.set_format(Format::Bc3);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16, bytes.len());
+
+        compression_options.set_format(Format::Bc4S);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16 / 2, bytes.len());
+
+        compression_options.set_format(Format::Bc5S);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16, bytes.len());
+
+        compression_options.set_format(Format::Bc6S);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16, bytes.len());
+
+        compression_options.set_format(Format::Bc7);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16, bytes.len());
+
+        compression_options.set_format(Format::Rgba);
+        let bytes = context
+            .compress(&image, &compression_options, &output_options)
+            .unwrap();
+        assert_eq!(16 * 16 * 4, bytes.len());
     }
 }

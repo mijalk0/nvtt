@@ -1,6 +1,6 @@
 [package]
-name = "nvtt"
-version = "0.1.0"
+name = "nvtt-rs"
+version = "0.10.0"
 edition = "2021"
 authors = [ "Luka Mijalkovic <luka.mijalkovic3@gmail.com>" ]
 description = "A rust wrapper around the Nvidia Texture Tools library."
@@ -12,7 +12,7 @@ categories = [ "nvidia", "texture_compression" ]
 rust-version = "1.66"
 
 [dependencies]
-nvtt-sys = { version = "0.1.0", path = "../nvtt-sys" }
+nvtt-sys = { version = "0.5.0", path = "../nvtt-sys" }
 cfg-if = "1"
 thiserror = "1"
 lazy_static = "1.4"

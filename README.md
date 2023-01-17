@@ -1,5 +1,9 @@
 # nvtt
 
+[![crates.io](https://img.shields.io/crates/v/nvtt_rs.svg)](https://crates.io/crates/nvtt_rs)
+[![docs](https://docs.rs/nvtt_rs/badge.svg)](https://docs.rs/nvtt_rs)
+[![rustc](https://img.shields.io/badge/rust-1.66%2B-orange.svg)](https://img.shields.io/badge/rust-1.66%2B-orange.svg)
+
 A rust wrapper around the [Nvidia Texture Tools 3 library](https://developer.nvidia.com/gpu-accelerated-texture-compression).
 
 NVTT 3 is a library that can be used to compress image data and files into compressed texture formats, and to handle compressed and uncompressed images.
